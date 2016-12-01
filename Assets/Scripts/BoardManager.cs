@@ -15,6 +15,16 @@ public class BoardManager : MonoBehaviour {
 	public int initialNumberOfEachTileColor;
 	private bool boardInitialized;
 
+	public Material[] mats;
+	/*
+	 * index:	1) board1
+	 * 			2) board2
+	 * 			3) red
+	 * 			4) blue
+	 * 			5) yellow
+	 * 			6) green
+	 */
+
 	// Use this for initialization
 	void Start () {
 		numCols = 6;
@@ -40,48 +50,64 @@ public class BoardManager : MonoBehaviour {
 		board = new BoardSpace[numCols, numRows];
 		for (int i = 0; i < numCols; i++) {
 			for (int j = 0; j < numRows; j++) {
-				Color spaceColor;
+				int spaceColor;
 				if (IsCentered (i, numCols) && IsCentered (j, numRows)) {
-					spaceColor = Color.magenta;
+					//spaceColor = Color.magenta;
+					spaceColor = 2;
 				} else if ((i + j) % 2 == 0) {
-					spaceColor = Color.black;
+					//spaceColor = Color.gray;
+					//spaceColor = new Color(0.5f, 0.5f, 0.5f);
+					spaceColor = 0;
 				} else {
-					spaceColor = Color.white;
+					//spaceColor = new Color(0.8f,0.8f,0.8f,1f);
+					//spaceColor = Color.white;
+					spaceColor = 1;
 				}
 				CreateBoardSpace (i, j, spaceColor);
 			}
 		}
 	}
 
-	void CreateBoardSpace (int colNum, int rowNum, Color spaceColor){
+	void CreateBoardSpace (int colNum, int rowNum, int materialIndex){
 		GameObject boardSpace;
 		Vector3 location = new Vector3(colNum - numCols/2 + 0.5f, 0, rowNum - numRows/2 +  0.5f);
 		boardSpace = Instantiate(spacePrefab, location, Quaternion.LookRotation(Vector3.down)) as GameObject;
-		boardSpace.GetComponent<MeshRenderer>().material.color = spaceColor;
+		//boardSpace.GetComponent<MeshRenderer>().material.color = spaceColor;
+		//boardSpace.GetComponent<MeshRenderer>().material.SetColor("_Color",spaceColor);
+		boardSpace.GetComponent<MeshRenderer>().material = mats[materialIndex];
 		boardSpace.GetComponent<BoardSpace>().boardManager = this;
 		board [colNum, rowNum] = boardSpace.GetComponent<BoardSpace> ();
 	}
 
-	void CreateTile(Color tileColor){
+	void CreateTile(int materialIndex){
 		GameObject tile;
 		Vector3 offscreen = new Vector3(-1000, -1000, -1000);
 		tile = Instantiate(tilePrefab, offscreen, Quaternion.identity) as GameObject;
-		tile.GetComponent<MeshRenderer>().material.color = tileColor;
+		tile.GetComponent<MeshRenderer>().material = mats[materialIndex];
 		tileBag.Add(tile.GetComponent<Tile>());
 	}
 
 	void CreateTileBag(){
 		tileBag = new List<Tile> ();
 
-		CreateTilesOfAColor (Color.red);
-		CreateTilesOfAColor (Color.blue);
-		CreateTilesOfAColor (Color.yellow);
-		CreateTilesOfAColor (Color.green);
+		//CreateTilesOfAColor (Color.red);
+
+		//red
+		CreateTilesOfAColor(3);
+
+		//blue
+		CreateTilesOfAColor (4);
+
+		//yellow
+		CreateTilesOfAColor (5);
+
+		//green
+		CreateTilesOfAColor (6);
 	}
 
-	void CreateTilesOfAColor(Color tileColor){
+	void CreateTilesOfAColor(int materialIndex){
 		for (int i = 0; i < initialNumberOfEachTileColor; i++) {
-			CreateTile (tileColor);
+			CreateTile (materialIndex);
 		}
 	}
 
