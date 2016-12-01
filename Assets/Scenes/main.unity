@@ -119,7 +119,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   phase: 
   boardManagerObj: {fileID: 845038786}
-  tileSpawnPosition: {x: -5, y: 0, z: 0}
+  tileSpawnPositions:
+  - {x: -5, y: 0, z: 0}
+  - {x: 0, y: 0, z: 5}
+  - {x: 5, y: 0, z: 0}
+  - {x: 0, y: 0, z: -5}
+  rotationIndex: 0
   spawnedTile: {fileID: 0}
   topTiles:
     serializedVersion: 2
@@ -143,7 +148,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!1 &845038786
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +196,36 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
+--- !u!1 &1062890547
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1062890548}
+  m_Layer: 0
+  m_Name: PivotPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1062890548
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1062890547}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1732913897}
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
 --- !u!1 &1732913892
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +312,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 35, y: 45, z: 0}
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1062890548}
   m_RootOrder: 0
 --- !u!114 &1732913898
 MonoBehaviour:
@@ -293,7 +327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardCenter: {fileID: 2145143139}
   turnManagerObj: {fileID: 303297322}
-  currentRotation: 0
+  currentPositionIndex: 0
 --- !u!1 &2145143139
 GameObject:
   m_ObjectHideFlags: 0
@@ -321,4 +355,4 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1

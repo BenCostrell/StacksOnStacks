@@ -64,7 +64,7 @@ public class BoardManager : MonoBehaviour {
 
 	void CreateTile(Color tileColor){
 		GameObject tile;
-		Vector3 offscreen = new Vector3(-100, -100, -100);
+		Vector3 offscreen = new Vector3(-1000, -1000, -1000);
 		tile = Instantiate(tilePrefab, offscreen, Quaternion.identity) as GameObject;
 		tile.GetComponent<MeshRenderer>().material.color = tileColor;
 		tileBag.Add(tile.GetComponent<Tile>());

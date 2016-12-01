@@ -6,33 +6,31 @@ public class CameraController : MonoBehaviour {
 	public GameObject boardCenter;
 	public GameObject turnManagerObj;
 	private TurnManager turnManager;
-	public int currentRotation;
+	public int currentPositionIndex;
 
 	// Use this for initialization
 	void Start () {
 		turnManager = turnManagerObj.GetComponent<TurnManager> ();
-		currentRotation = 0;
+		currentPositionIndex = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetButtonDown("rotateClockwise")){
-			transform.RotateAround (Vector3.zero, Vector3.up, 90f);
-			currentRotation = (currentRotation + 90)%360;
-			if (!turnManager.tilePlaced) {
-				turnManager.spawnedTile.transform.RotateAround (Vector3.zero, Vector3.up, 90f);
-			}
-
+			RotateBoard(1);
 		}
 
 		if(Input.GetButtonDown("rotateCounterclockwise")){
-			transform.RotateAround (Vector3.zero, Vector3.up, -90f);
-			currentRotation = (currentRotation - 90)%360;
-			if (!turnManager.tilePlaced) {
-				turnManager.spawnedTile.transform.RotateAround (Vector3.zero, Vector3.up, -90f);
-			}
+			RotateBoard(-1);
 		}
-	
 	}
 
+	void RotateBoard(int rotationDirection){
+		currentPositionIndex = (currentPositionIndex + rotationDirection + 4)%4;
+		turnManager.rotationIndex = currentPositionIndex;
+		Vector3 rotation = new Vector3 (0, rotationDirection * 90, 0);
+
+		iTween.RotateAdd (transform.parent.gameObject, iTween.Hash ("amount", rotation, "easetype", "easeOutBack"));
+
+	}
 }

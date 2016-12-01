@@ -7,7 +7,8 @@ public class TurnManager : MonoBehaviour {
 	public string phase;
 	public GameObject boardManagerObj;
 	private BoardManager boardManager;
-	public Vector3 tileSpawnPosition;
+	public Vector3[] tileSpawnPositions;
+	public int rotationIndex;
 	private bool isTileSpawned;
 	public Tile spawnedTile;
 	public LayerMask topTiles;
@@ -24,6 +25,7 @@ public class TurnManager : MonoBehaviour {
 		tilePlaced = false;
 		tileSelected = false;
 		stackUnstacked = true;
+		rotationIndex = 0;
 	}
 	
 	// Update is called once per frame
@@ -93,8 +95,7 @@ public class TurnManager : MonoBehaviour {
 	void DrawTileToPlace(){
 		Tile tileToPlace;
 		tileToPlace = boardManager.DrawTile ();
-		tileToPlace.transform.position = tileSpawnPosition;
-		tileToPlace.transform.RotateAround (Vector3.zero, Vector3.up, mainCamera.GetComponent<CameraController> ().currentRotation);
+		tileToPlace.transform.position = tileSpawnPositions[rotationIndex];
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
 		spawnedTile = tileToPlace;
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;
