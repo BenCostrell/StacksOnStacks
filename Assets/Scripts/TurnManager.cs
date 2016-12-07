@@ -17,6 +17,7 @@ public class TurnManager : MonoBehaviour {
 	public bool tileSelected;
 	public bool stackUnstacked;
 	public GameObject mainCamera;
+	public GameObject pivotPoint;
 
 	// Use this for initialization
 	void Start () {
@@ -73,6 +74,7 @@ public class TurnManager : MonoBehaviour {
 	void PlaceTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTiles)) {
+			spawnedTile.transform.parent = null;
 			Vector3 pointOnBoard = hit.transform.position;
 			spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
 			tilePlaced = true;
@@ -95,7 +97,8 @@ public class TurnManager : MonoBehaviour {
 	void DrawTileToPlace(){
 		Tile tileToPlace;
 		tileToPlace = boardManager.DrawTile ();
-		tileToPlace.transform.position = tileSpawnPositions[rotationIndex];
+		tileToPlace.transform.SetParent (pivotPoint.transform);
+		tileToPlace.transform.localPosition = new Vector3 (-5, 0, 0);
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
 		spawnedTile = tileToPlace;
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;

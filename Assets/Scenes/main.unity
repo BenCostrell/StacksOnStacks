@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1.783089, g: 1.9789965, b: 2.2888386, a: 1}
+  m_IndirectSpecularColor: {r: 1.7830904, g: 1.9789978, b: 2.2888408, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -199,6 +199,7 @@ MonoBehaviour:
   tileSelected: 0
   stackUnstacked: 0
   mainCamera: {fileID: 1732913892}
+  pivotPoint: {fileID: 1062890547}
 --- !u!4 &303297324
 Transform:
   m_ObjectHideFlags: 0
@@ -233,7 +234,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 435427833}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -241,8 +242,8 @@ Transform:
   - {fileID: 98761277}
   - {fileID: 980586315}
   - {fileID: 2118016572}
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_Father: {fileID: 1062890548}
+  m_RootOrder: 2
 --- !u!1 &845038786
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,6 +391,7 @@ Transform:
   m_Children:
   - {fileID: 1732913897}
   - {fileID: 1960400312}
+  - {fileID: 435427834}
   m_Father: {fileID: 0}
   m_RootOrder: 3
 --- !u!1 &1732913892
