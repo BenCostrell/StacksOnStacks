@@ -25,7 +25,7 @@ public class TurnManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		boardManager = boardManagerObj.GetComponent<BoardManager> ();
-		mode = "Spawn Tile";
+		mode = "Spawn Tile"; //spawn tile, select tile, place tile 0 (you haven't placed it anywhere yet), place tile 1 (you've placed it somewhere, but not finalized), select stack
 		rotationIndex = 0;
 	}
 	
@@ -151,7 +151,7 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
-	void UndoQueueSpill(){
+	public void UndoQueueSpill(){
 		spillUI.SetActive (true);
 		boardManager.spaceQueuedToSpillFrom.ResetTilesToPosition ();
 		mode = "Queue Spill";
