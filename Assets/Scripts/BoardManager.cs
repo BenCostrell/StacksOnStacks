@@ -12,6 +12,8 @@ public class BoardManager : MonoBehaviour {
 	public int currentNumRows;
 	private int currentLowestColIndex;
 	private int currentLowestRowIndex;
+	private int currentHighestColIndex;
+	private int currentHighestRowIndex;
 	public BoardSpace[,] board;
 	private List<Tile> tileBag;
 	public int initialNumberOfEachTileColor;
@@ -40,6 +42,8 @@ public class BoardManager : MonoBehaviour {
 		currentNumRows = numRows;
 		currentLowestColIndex = 0;
 		currentLowestRowIndex = 0;
+		currentHighestColIndex = 5;
+		currentHighestRowIndex = 5;
 
 		CreateBoard ();
 		CreateTileBag ();
@@ -155,13 +159,34 @@ public class BoardManager : MonoBehaviour {
 			int index = numTilesToMove - 1 - i;
 			Tile tileToMove = spaceToSpill.tileList [index];
 			tilesQueuedToSpill.Add (tileToMove);
-			boardSpaceX = (boardSpaceX + xDirection + currentNumCols) % currentNumCols;
-			boardSpaceZ = (boardSpaceZ + zDirection + currentNumRows) % currentNumRows;
+			int[] targetCoords = CalculateAdjacentSpace (boardSpaceX, boardSpaceZ, xDirection, zDirection);
+			boardSpaceX = targetCoords [0];
+			boardSpaceZ = targetCoords [1];
+			Debug.Log ("attempting to spill onto space " + boardSpaceX + ", " + boardSpaceZ);
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
 		}
 		spaceQueuedToSpillFrom = spaceToSpill;
+	}
+
+	int[] CalculateAdjacentSpace(int x, int z, int xDirection, int zDirection){
+		int[] coords = new int[2];
+		int targetX = x + xDirection;
+		if (targetX > currentHighestColIndex) {
+			targetX = currentLowestColIndex;
+		} else if (targetX < currentLowestColIndex) {
+			targetX = currentHighestColIndex;
+		}
+		int targetZ = z + zDirection;
+		if (targetZ > currentHighestRowIndex) {
+			targetZ = currentLowestRowIndex;
+		} else if (targetZ < currentLowestRowIndex) {
+			targetZ = currentHighestRowIndex;
+		}
+		coords [0] = targetX;
+		coords [1] = targetZ;
+		return coords;
 	}
 
 	public void Spill(){
@@ -179,17 +204,22 @@ public class BoardManager : MonoBehaviour {
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
 			Spill ();
+			Debug.Log ("collapsing space " + space.colNum + ", " + space.rowNum);
 			Destroy (space.gameObject);
 		}
 		if ((sideAboutToCollapse % 2) == 0) {
 			currentNumCols -= 1;
 			if (sideAboutToCollapse == 0) {
 				currentLowestColIndex += 1;
+			} else {
+				currentHighestColIndex -= 1;
 			}
 		} else {
 			currentNumRows -= 1;
 			if (sideAboutToCollapse == 3) {
 				currentLowestRowIndex += 1;
+			} else {
+				currentHighestRowIndex -= 1;
 			}
 		}
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
@@ -201,18 +231,18 @@ public class BoardManager : MonoBehaviour {
 		if (sideAboutToCollapse == 0) {
 			indexToCollapse = currentLowestColIndex;
 		} else if (sideAboutToCollapse == 1) {
-			indexToCollapse = currentNumRows;
+			indexToCollapse = currentHighestRowIndex;
 		} else if (sideAboutToCollapse == 2) {
-			indexToCollapse = currentNumCols;
+			indexToCollapse = currentHighestColIndex;
 		} else {
 			indexToCollapse = currentLowestRowIndex;
 		}
 		if ((sideAboutToCollapse % 2) == 0) {
-			for (int i = currentLowestRowIndex; i < currentNumRows; i++) {
+			for (int i = currentLowestRowIndex; i < currentHighestRowIndex + 1; i++) {
 				spaceList.Add (board [indexToCollapse, i]);
 			}
 		} else {
-			for (int i = currentLowestColIndex; i < currentNumCols; i++) {
+			for (int i = currentLowestColIndex; i < currentHighestColIndex + 1; i++) {
 				spaceList.Add (board [i, indexToCollapse]);
 			}
 		}
