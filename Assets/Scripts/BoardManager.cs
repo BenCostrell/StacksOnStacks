@@ -84,6 +84,11 @@ public class BoardManager : MonoBehaviour {
 		boardSpaceScript.boardManager = this;
 		boardSpaceScript.colNum = colNum;
 		boardSpaceScript.rowNum = rowNum;
+		if (IsCentered (colNum, numCols) && IsCentered (rowNum, numRows)) {
+			boardSpaceScript.isCenterTile = true;
+		} else {
+			boardSpaceScript.isCenterTile = false;
+		}
 		board [colNum, rowNum] = boardSpace.GetComponent<BoardSpace> ();
 	}
 
@@ -155,6 +160,7 @@ public class BoardManager : MonoBehaviour {
 		int boardSpaceZ = spaceToSpill.rowNum;
 		tilesQueuedToSpill = new List<Tile> ();
 		int numTilesToMove = spaceToSpill.tileList.Count;
+		spaceToSpill.provisionalTileCount = 0;
 		for (int i = 0; i < numTilesToMove; i++) {
 			int index = numTilesToMove - 1 - i;
 			Tile tileToMove = spaceToSpill.tileList [index];
@@ -162,7 +168,6 @@ public class BoardManager : MonoBehaviour {
 			int[] targetCoords = CalculateAdjacentSpace (boardSpaceX, boardSpaceZ, xDirection, zDirection);
 			boardSpaceX = targetCoords [0];
 			boardSpaceZ = targetCoords [1];
-			Debug.Log ("attempting to spill onto space " + boardSpaceX + ", " + boardSpaceZ);
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
@@ -191,6 +196,7 @@ public class BoardManager : MonoBehaviour {
 
 	public void Spill(){
 		foreach (Tile tileToPlace in tilesQueuedToSpill){
+			tileToPlace.spaceQueuedToSpillOnto.provisionalTileCount = tileToPlace.spaceQueuedToSpillOnto.tileList.Count;
 			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
 			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
 		}

@@ -68,30 +68,32 @@ public class TurnManager : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTilesAndSpillUI)) {
 			if (hit.collider.transform.tag == "Tile") {
-				stackSelected = true;
 				Vector3 tileHitLocation = hit.transform.position;
 				BoardSpace space = CalculateSpaceFromLocation (tileHitLocation);
-				if (selectedSpace != null) {
-					if (selectedSpace != space) {
-						foreach (Tile tile in selectedSpace.tileList) {
-							tile.GetComponentInChildren<ParticleSystem> ().Stop ();
-							tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+				if (space.tileList.Count > 1) {
+					stackSelected = true;
+					if (selectedSpace != null) {
+						if (selectedSpace != space) {
+							foreach (Tile tile in selectedSpace.tileList) {
+								tile.GetComponentInChildren<ParticleSystem> ().Stop ();
+								tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+							}
+							foreach (Tile tile in space.tileList) {
+								tile.GetComponentInChildren<ParticleSystem> ().Play ();
+							}
 						}
+					} else {
 						foreach (Tile tile in space.tileList) {
 							tile.GetComponentInChildren<ParticleSystem> ().Play ();
 						}
 					}
-				} else {
-					foreach (Tile tile in space.tileList) {
-						tile.GetComponentInChildren<ParticleSystem> ().Play ();
-					}
+					selectedSpace = space;
+					mode = "Queue Spill";
+					Vector3 topTileLocation = selectedSpace.tileList [selectedSpace.tileList.Count - 1].transform.position;
+					Destroy (spillUI);
+					spillUI = Instantiate (spillUIPrefab, 
+						new Vector3 (topTileLocation.x, topTileLocation.y + 0.2f, topTileLocation.z), Quaternion.identity) as GameObject;
 				}
-				selectedSpace = space;
-				mode = "Queue Spill";
-				Vector3 topTileLocation = selectedSpace.tileList [selectedSpace.tileList.Count - 1].transform.position;
-				Destroy (spillUI);
-				spillUI = Instantiate (spillUIPrefab, 
-					new Vector3 (topTileLocation.x, topTileLocation.y + 0.2f, topTileLocation.z), Quaternion.identity) as GameObject;
 			}
 		}
 		return stackSelected;
@@ -108,10 +110,11 @@ public class TurnManager : MonoBehaviour {
 	void PlaceTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTiles)) {
-			mode = "Place Tile 1";
-			spawnedTile.transform.parent = null;
-			Vector3 pointOnBoard = hit.transform.position;
-			spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
+			if (!CalculateSpaceFromLocation (hit.collider.transform.position).isCenterTile) {
+				mode = "Place Tile 1";
+				Vector3 pointOnBoard = hit.transform.position;
+				spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
+			}
 		}
 	}
 
