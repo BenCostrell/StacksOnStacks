@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1.783089, g: 1.9789965, b: 2.2888386, a: 1}
+  m_IndirectSpecularColor: {r: 1.7830904, g: 1.9789978, b: 2.2888408, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -235,11 +235,18 @@ MonoBehaviour:
   spawnedTileLayer:
     serializedVersion: 2
     m_Bits: 512
-  tilePlaced: 0
-  tileSelected: 0
-  stackUnstacked: 0
+  topTilesAndSpillUI:
+    serializedVersion: 2
+    m_Bits: 2304
+  spillUILayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  mode: 
   mainCamera: {fileID: 1732913892}
   pivotPoint: {fileID: 1062890547}
+  spillUIPrefab: {fileID: 1000010922449184, guid: 60555072954a9a54aa3422c1ea5c091b,
+    type: 2}
+  spillUI: {fileID: 0}
 --- !u!4 &303297324
 Transform:
   m_ObjectHideFlags: 0
@@ -319,6 +326,8 @@ MonoBehaviour:
   currentNumCols: 0
   currentNumRows: 0
   initialNumberOfEachTileColor: 20
+  tilesQueuedToSpill: []
+  spaceQueuedToSpillFrom: {fileID: 0}
   boardInitialized: 0
   mats:
   - {fileID: 2100000, guid: 756f9047843b642a09f47b5a60ef45ad, type: 2}
@@ -435,6 +444,55 @@ Transform:
   - {fileID: 435427834}
   m_Father: {fileID: 0}
   m_RootOrder: 3
+--- !u!1 &1357961083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1357961087}
+  - 33: {fileID: 1357961086}
+  - 64: {fileID: 1357961085}
+  m_Layer: 10
+  m_Name: InvisBoardPlane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!64 &1357961085
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1357961083}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &1357961086
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1357961083}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1357961087
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1357961083}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
 --- !u!1 &1732913892
 GameObject:
   m_ObjectHideFlags: 0

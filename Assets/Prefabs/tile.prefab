@@ -42,7 +42,7 @@ GameObject:
   - 114: {fileID: 114000010861111216}
   m_Layer: 0
   m_Name: tile
-  m_TagString: Untagged
+  m_TagString: Tile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 576b3616341800d4cbb76fad6e68f185, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spaceQueuedToSpillOnto: {fileID: 0}
 --- !u!198 &198000010151002586
 ParticleSystem:
   m_ObjectHideFlags: 1

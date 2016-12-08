@@ -13,8 +13,8 @@ public class BoardManager : MonoBehaviour {
 	public BoardSpace[,] board;
 	private List<Tile> tileBag;
 	public int initialNumberOfEachTileColor;
-	private List<Tile> tilesQueuedToSpill;
-	private BoardSpace spaceQueuedToSpillFrom;
+	public List<Tile> tilesQueuedToSpill;
+	public BoardSpace spaceQueuedToSpillFrom;
 
 	public bool boardInitialized;
 
@@ -142,6 +142,7 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public void QueueSpill(BoardSpace spaceToSpill, int xDirection, int zDirection){
+		Debug.Log ("queuing spill in direction " + xDirection + ", " + zDirection);
 		int boardSpaceX = spaceToSpill.colNum;
 		int boardSpaceZ = spaceToSpill.rowNum;
 		tilesQueuedToSpill = new List<Tile> ();
@@ -150,8 +151,9 @@ public class BoardManager : MonoBehaviour {
 			int index = numTilesToMove - 1 - i;
 			Tile tileToMove = spaceToSpill.tileList [index];
 			tilesQueuedToSpill.Add (tileToMove);
-			boardSpaceX = (boardSpaceX + xDirection) % currentNumCols;
-			boardSpaceZ = (boardSpaceZ + zDirection) % currentNumRows;
+			boardSpaceX = (boardSpaceX + xDirection + currentNumCols) % currentNumCols;
+			boardSpaceZ = (boardSpaceZ + zDirection + currentNumRows) % currentNumRows;
+			Debug.Log ("spilling onto space " + boardSpaceX + ", " + boardSpaceZ);
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
