@@ -11,62 +11,70 @@ public class TurnManager : MonoBehaviour {
 	public int rotationIndex;
 	private bool isTileSpawned;
 	public Tile spawnedTile;
+	private BoardSpace selectedSpace;
 	public LayerMask topTiles;
 	public LayerMask spawnedTileLayer;
-	public bool tilePlaced;
-	public bool tileSelected;
-	public bool stackUnstacked;
+	public string mode;
 	public GameObject mainCamera;
 	public GameObject pivotPoint;
 
 	// Use this for initialization
 	void Start () {
 		boardManager = boardManagerObj.GetComponent<BoardManager> ();
-		isTileSpawned = false;
-		tilePlaced = false;
-		tileSelected = false;
-		stackUnstacked = true;
+		mode = "Spawn Tile";
 		rotationIndex = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (!isTileSpawned && stackUnstacked) {
+		if (mode == "Spawn Tile") {
 			DrawTileToPlace ();
-			isTileSpawned = true;
-			stackUnstacked = false;
+			mode = "Select Tile";
 		}
 		if (Input.GetMouseButton (0)) {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if (isTileSpawned) {
-				if (tileSelected) {
-					PlaceTile (ray);
-				} else {
-					SelectTile (ray);
-				}
-			} else {
+			if (mode == "Select Tile") {
+				SelectTile (ray);
+			} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
+				PlaceTile (ray);
+			} else if (mode == "Select Stack"){
 				SelectStack (ray);
 			}
 		}
-		if (Input.GetKeyDown (KeyCode.Space) && tilePlaced) {
+		if (Input.GetKeyDown (KeyCode.Space) && mode == "Place Tile 1") {
 			FinalizeTilePlacement ();
+			mode = "Select Stack";
 		}
 	}
 
 	void SelectStack(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTiles)) {
-			Vector3 pointOnBoard = hit.transform.position;
+			Vector3 tileHitLocation = hit.transform.position;
+			BoardSpace space = CalculateSpaceFromLocation (tileHitLocation);
+			if (selectedSpace != null) {
+				if (selectedSpace != space) {
+					foreach (Tile tile in selectedSpace.tileList) {
+						tile.GetComponentInChildren<ParticleSystem> ().Stop ();
+						tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+					}
+					foreach (Tile tile in space.tileList) {
+						tile.GetComponentInChildren<ParticleSystem> ().Play ();
+					}
+				}
+			} else {
+				foreach (Tile tile in space.tileList) {
+					tile.GetComponentInChildren<ParticleSystem> ().Play ();
+				}
+			}
+			selectedSpace = space;
 		}
 	}
 
 	void SelectTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spawnedTileLayer)) {
-			Color spawnColor = spawnedTile.GetComponent<MeshRenderer> ().material.color;
-			spawnColor.a = 0.7f;			
-			spawnedTile.GetComponent<MeshRenderer> ().material.color = spawnColor;
-			tileSelected = true;
+			mode = "Place Tile 0";
 			spawnedTile.GetComponentInChildren<ParticleSystem> ().Play ();
 		}
 	}
@@ -74,20 +82,16 @@ public class TurnManager : MonoBehaviour {
 	void PlaceTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTiles)) {
+			mode = "Place Tile 1";
 			spawnedTile.transform.parent = null;
 			Vector3 pointOnBoard = hit.transform.position;
 			spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
-			tilePlaced = true;
 		}
 	}
 
 	void FinalizeTilePlacement(){
-		int colNum = Mathf.RoundToInt (spawnedTile.transform.position.x - 0.5f + boardManager.numCols / 2);
-		int rowNum = Mathf.RoundToInt (spawnedTile.transform.position.z - 0.5f + boardManager.numRows / 2);
-		boardManager.board [colNum, rowNum].AddTile (spawnedTile);
-		tilePlaced = false;
-		isTileSpawned = false;
-		tileSelected = false;
+		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
+		space.AddTile (spawnedTile);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
@@ -102,5 +106,15 @@ public class TurnManager : MonoBehaviour {
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
 		spawnedTile = tileToPlace;
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;
+	}
+
+	BoardSpace CalculateSpaceFromLocation(Vector3 location){
+		int col = Mathf.RoundToInt (location.x - 0.5f + boardManager.numCols / 2);
+		int row = Mathf.RoundToInt (location.z - 0.5f + boardManager.numRows / 2);
+		int[] coords;
+		coords = new int[2];
+		coords [0] = col;
+		coords [1] = row;
+		return boardManager.board[coords[0], coords[1]];
 	}
 }

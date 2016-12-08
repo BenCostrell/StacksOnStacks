@@ -14,6 +14,8 @@ public class BoardManager : MonoBehaviour {
 	private List<Tile> tileBag;
 	public int initialNumberOfEachTileColor;
 	private bool boardInitialized;
+	private List<Tile> tilesQueuedToSpill;
+	private BoardSpace spaceQueuedToSpillFrom;
 
 	public Material[] mats;
 	/*
@@ -75,7 +77,10 @@ public class BoardManager : MonoBehaviour {
 		//boardSpace.GetComponent<MeshRenderer>().material.color = spaceColor;
 		//boardSpace.GetComponent<MeshRenderer>().material.SetColor("_Color",spaceColor);
 		boardSpace.GetComponent<MeshRenderer>().material = mats[materialIndex];
-		boardSpace.GetComponent<BoardSpace>().boardManager = this;
+		BoardSpace boardSpaceScript = boardSpace.GetComponent<BoardSpace> ();
+		boardSpaceScript.boardManager = this;
+		boardSpaceScript.colNum = colNum;
+		boardSpaceScript.rowNum = rowNum;
 		board [colNum, rowNum] = boardSpace.GetComponent<BoardSpace> ();
 	}
 
@@ -144,18 +149,28 @@ public class BoardManager : MonoBehaviour {
 		return drawnTile;
 	}
 
-	public void UnstackSpace(int colNum, int rowNum, int xDirection, int zDirection){
-		int boardSpaceX = colNum;
-		int boardSpaceZ = rowNum;
-		BoardSpace spaceToUnstack = board [colNum, rowNum];
-		int numTilesToMove = spaceToUnstack.tileList.Count;
+	public void QueueSpill(BoardSpace spaceToSpill, int xDirection, int zDirection){
+		int boardSpaceX = spaceToSpill.colNum;
+		int boardSpaceZ = spaceToSpill.rowNum;
+		tilesQueuedToSpill = new List<Tile> ();
+		int numTilesToMove = spaceToSpill.tileList.Count;
 		for (int i = 0; i < numTilesToMove; i++) {
 			int index = numTilesToMove - 1 - i;
-			Tile tileToMove = spaceToUnstack.tileList [index];
-			spaceToUnstack.tileList.RemoveAt (index);
+			Tile tileToMove = spaceToSpill.tileList [index];
+			tilesQueuedToSpill.Add (tileToMove);
 			boardSpaceX = (boardSpaceX + xDirection) % currentNumCols;
 			boardSpaceZ = (boardSpaceZ + zDirection) % currentNumRows;
-			board [boardSpaceX, boardSpaceZ].AddTile (tileToMove);
+			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
+			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
+			spaceToSpillOnto.PositionNewTile (tileToMove);
+		}
+		spaceQueuedToSpillFrom = spaceToSpill;
+	}
+
+	public void Spill(){
+		foreach (Tile tileToPlace in tilesQueuedToSpill){
+			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
+			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
 		}
 	}
 

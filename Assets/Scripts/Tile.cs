@@ -3,7 +3,8 @@ using System.Collections;
 
 public class Tile : MonoBehaviour {
 
-	Renderer renderer;
+	private Renderer renderer;
+	public BoardSpace spaceQueuedToSpillOnto;
 
 	// Use this for initialization
 	void Start () {
