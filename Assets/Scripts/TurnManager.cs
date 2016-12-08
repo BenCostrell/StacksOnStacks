@@ -44,24 +44,28 @@ public class TurnManager : MonoBehaviour {
 			} else if (mode == "Select Stack") {
 				SelectStack (ray);
 			} else if (mode == "Queue Spill") {
-				SelectStack (ray);
-				InitQueueSpill (ray);
+				if (!SelectStack (ray)) {
+					InitQueueSpill (ray);
+				}
+			} else if (mode == "Finalize Spill") {
+				UndoQueueSpill ();
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Space)) {
 			if (mode == "Place Tile 1") {
 				FinalizeTilePlacement ();
-				mode = "Select Stack";
 			} else if (mode == "Finalize Spill") {
-				UndoQueueSpill ();
+				FinalizeSpill ();
 			}
 		}
 	}
 
-	void SelectStack(Ray ray){
+	bool SelectStack(Ray ray){
+		bool stackSelected = false;
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTilesAndSpillUI)) {
 			if (hit.collider.transform.tag == "Tile") {
+				stackSelected = true;
 				Vector3 tileHitLocation = hit.transform.position;
 				BoardSpace space = CalculateSpaceFromLocation (tileHitLocation);
 				if (selectedSpace != null) {
@@ -87,6 +91,7 @@ public class TurnManager : MonoBehaviour {
 					new Vector3 (topTileLocation.x, topTileLocation.y + 0.2f, topTileLocation.z), Quaternion.identity) as GameObject;
 			}
 		}
+		return stackSelected;
 	}
 
 	void SelectTile(Ray ray){
@@ -113,7 +118,7 @@ public class TurnManager : MonoBehaviour {
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
-
+		mode = "Select Stack";
 	}
 
 	void DrawTileToPlace(){
