@@ -13,9 +13,10 @@ public class BoardManager : MonoBehaviour {
 	public BoardSpace[,] board;
 	private List<Tile> tileBag;
 	public int initialNumberOfEachTileColor;
-	private bool boardInitialized;
 	private List<Tile> tilesQueuedToSpill;
 	private BoardSpace spaceQueuedToSpillFrom;
+
+	public bool boardInitialized;
 
 	public Material[] mats;
 	/*
@@ -54,15 +55,10 @@ public class BoardManager : MonoBehaviour {
 			for (int j = 0; j < numRows; j++) {
 				int spaceColor;
 				if (IsCentered (i, numCols) && IsCentered (j, numRows)) {
-					//spaceColor = Color.magenta;
 					spaceColor = 2;
 				} else if ((i + j) % 2 == 0) {
-					//spaceColor = Color.gray;
-					//spaceColor = new Color(0.5f, 0.5f, 0.5f);
 					spaceColor = 0;
 				} else {
-					//spaceColor = new Color(0.8f,0.8f,0.8f,1f);
-					//spaceColor = Color.white;
 					spaceColor = 1;
 				}
 				CreateBoardSpace (i, j, spaceColor);
@@ -74,8 +70,6 @@ public class BoardManager : MonoBehaviour {
 		GameObject boardSpace;
 		Vector3 location = new Vector3(colNum - numCols/2 + 0.5f, 0, rowNum - numRows/2 +  0.5f);
 		boardSpace = Instantiate(spacePrefab, location, Quaternion.LookRotation(Vector3.down)) as GameObject;
-		//boardSpace.GetComponent<MeshRenderer>().material.color = spaceColor;
-		//boardSpace.GetComponent<MeshRenderer>().material.SetColor("_Color",spaceColor);
 		boardSpace.GetComponent<MeshRenderer>().material = mats[materialIndex];
 		BoardSpace boardSpaceScript = boardSpace.GetComponent<BoardSpace> ();
 		boardSpaceScript.boardManager = this;
@@ -94,8 +88,6 @@ public class BoardManager : MonoBehaviour {
 
 	void CreateTileBag(){
 		tileBag = new List<Tile> ();
-
-		//CreateTilesOfAColor (Color.red);
 
 		//red
 		CreateTilesOfAColor(3);
