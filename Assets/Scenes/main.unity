@@ -892,7 +892,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ebea2ba090464cddb1a90b35ffc0d63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  undobutton: {fileID: 56650537}
 --- !u!1 &1960400311
 GameObject:
   m_ObjectHideFlags: 0
