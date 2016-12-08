@@ -21,12 +21,15 @@ public class TurnManager : MonoBehaviour {
 	public GameObject pivotPoint;
 	public GameObject spillUIPrefab;
 	public GameObject spillUI;
+	private bool firstTileFinalized;
+
 
 	// Use this for initialization
 	void Start () {
 		boardManager = boardManagerObj.GetComponent<BoardManager> ();
 		mode = "Spawn Tile";
 		rotationIndex = 0;
+		firstTileFinalized = false;
 	}
 	
 	// Update is called once per frame
@@ -119,6 +122,18 @@ public class TurnManager : MonoBehaviour {
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
 		mode = "Select Stack";
+		if (!firstTileFinalized) {
+			firstTileFinalized = true;
+			if ((space.colNum == 0) && (space.rowNum != 0)) {
+				boardManager.sideAboutToCollapse = 0;
+			} else if (space.rowNum == 5) {
+				boardManager.sideAboutToCollapse = 1;
+			} else if (space.colNum == 5) {
+				boardManager.sideAboutToCollapse = 2;
+			} else {
+				boardManager.sideAboutToCollapse = 3;
+			}
+		}
 	}
 
 	void DrawTileToPlace(){
@@ -165,6 +180,12 @@ public class TurnManager : MonoBehaviour {
 		}
 		boardManager.Spill ();
 		mode = "Spawn Tile";
+		StartCoroutine (InitSideCollapse());
+	}
+
+	IEnumerator InitSideCollapse(){
+		yield return new WaitForSeconds (2);
+		boardManager.CollapseSide ();
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){

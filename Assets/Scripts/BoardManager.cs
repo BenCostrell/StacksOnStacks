@@ -10,6 +10,8 @@ public class BoardManager : MonoBehaviour {
 	public int numRows;
 	public int currentNumCols;
 	public int currentNumRows;
+	private int currentLowestColIndex;
+	private int currentLowestRowIndex;
 	public BoardSpace[,] board;
 	private List<Tile> tileBag;
 	public int initialNumberOfEachTileColor;
@@ -17,6 +19,7 @@ public class BoardManager : MonoBehaviour {
 	public BoardSpace spaceQueuedToSpillFrom;
 
 	public bool boardInitialized;
+	public int sideAboutToCollapse;
 
 	public Material[] mats;
 	/*
@@ -35,6 +38,8 @@ public class BoardManager : MonoBehaviour {
 
 		currentNumCols = numCols;
 		currentNumRows = numRows;
+		currentLowestColIndex = 0;
+		currentLowestRowIndex = 0;
 
 		CreateBoard ();
 		CreateTileBag ();
@@ -142,7 +147,6 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public void QueueSpill(BoardSpace spaceToSpill, int xDirection, int zDirection){
-		Debug.Log ("queuing spill in direction " + xDirection + ", " + zDirection);
 		int boardSpaceX = spaceToSpill.colNum;
 		int boardSpaceZ = spaceToSpill.rowNum;
 		tilesQueuedToSpill = new List<Tile> ();
@@ -153,7 +157,6 @@ public class BoardManager : MonoBehaviour {
 			tilesQueuedToSpill.Add (tileToMove);
 			boardSpaceX = (boardSpaceX + xDirection + currentNumCols) % currentNumCols;
 			boardSpaceZ = (boardSpaceZ + zDirection + currentNumRows) % currentNumRows;
-			Debug.Log ("spilling onto space " + boardSpaceX + ", " + boardSpaceZ);
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
@@ -166,6 +169,66 @@ public class BoardManager : MonoBehaviour {
 			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
 			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
 		}
+	}
+
+	public void CollapseSide(){
+		List<BoardSpace> spacesToCollapse = GetSpaceListFromSideNum ();
+		int[] coords = GetDirectionFromSideNum ();
+		int xDirection = coords[0];
+		int zDirection = coords[1];
+		foreach (BoardSpace space in spacesToCollapse) {
+			QueueSpill (space, xDirection, zDirection);
+			Spill ();
+			Destroy (space.gameObject);
+		}
+		if ((sideAboutToCollapse % 2) == 0) {
+			currentNumCols -= 1;
+			if (sideAboutToCollapse == 0) {
+				currentLowestColIndex += 1;
+			}
+		} else {
+			currentNumRows -= 1;
+			if (sideAboutToCollapse == 3) {
+				currentLowestRowIndex += 1;
+			}
+		}
+		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
+	}
+
+	List<BoardSpace> GetSpaceListFromSideNum(){
+		List<BoardSpace> spaceList = new List<BoardSpace> ();
+		int indexToCollapse = 0;
+		if (sideAboutToCollapse == 0) {
+			indexToCollapse = currentLowestColIndex;
+		} else if (sideAboutToCollapse == 1) {
+			indexToCollapse = currentNumRows;
+		} else if (sideAboutToCollapse == 2) {
+			indexToCollapse = currentNumCols;
+		} else {
+			indexToCollapse = currentLowestRowIndex;
+		}
+		if ((sideAboutToCollapse % 2) == 0) {
+			for (int i = currentLowestRowIndex; i < currentNumRows; i++) {
+				spaceList.Add (board [indexToCollapse, i]);
+			}
+		} else {
+			for (int i = currentLowestColIndex; i < currentNumCols; i++) {
+				spaceList.Add (board [i, indexToCollapse]);
+			}
+		}
+		return spaceList;
+	}
+
+	int[] GetDirectionFromSideNum(){
+		int[] coords = new int[2];
+		if ((sideAboutToCollapse % 2) == 0) {
+			coords [0] = 1 - sideAboutToCollapse;
+			coords [1] = 0;
+		} else {
+			coords [0] = 0;
+			coords [1] = sideAboutToCollapse - 2;
+		}
+		return coords;
 	}
 
 
