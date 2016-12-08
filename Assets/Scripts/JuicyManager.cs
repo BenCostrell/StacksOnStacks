@@ -4,6 +4,8 @@ using System.Collections;
 public class JuicyManager : MonoBehaviour {
 
 	BoardManager boardmanager;
+	TurnManager turnmanager;
+
 	bool finishedintro;
 
 	float boardSpaceBeginY = -15.0f;
@@ -12,6 +14,8 @@ public class JuicyManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
+		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
+
 		finishedintro = false;
 	}
 	

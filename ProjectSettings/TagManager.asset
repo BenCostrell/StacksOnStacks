@@ -6,6 +6,9 @@ TagManager:
   tags:
   - BoardManager
   - Tile
+  - TurnManager
+  - JuicyManager
+  - UICanvas
   layers:
   - Default
   - TransparentFX
