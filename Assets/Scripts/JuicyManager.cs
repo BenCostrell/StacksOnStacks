@@ -35,7 +35,7 @@ public class JuicyManager : MonoBehaviour {
 			}
 			//float delaytiles = boardspacetime * boardmanager.numRows * boardmanager.numCols;
 			//float delaytiles = 2.0f;
-			float delaytiles = boardspacetime;
+			float delaytiles = boardspacetime-1.3f;
 			float delaytilesrate = 0.1f;
 			float tiletime = 1.0f;
 			float tiletimerate = 0.1f;
