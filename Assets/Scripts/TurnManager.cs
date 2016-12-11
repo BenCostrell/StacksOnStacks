@@ -91,7 +91,7 @@ public class TurnManager : MonoBehaviour {
 				Vector3 topTileLocation = selectedSpace.tileList [selectedSpace.tileList.Count - 1].transform.position;
 				Destroy (spillUI);
 				spillUI = Instantiate (spillUIPrefab, 
-					new Vector3 (topTileLocation.x, topTileLocation.y + 0.2f, topTileLocation.z), Quaternion.identity) as GameObject;
+					new Vector3 (topTileLocation.x-9.2f, topTileLocation.y + 9.2f, topTileLocation.z-9.2f), Quaternion.identity) as GameObject;
 			}
 		}
 		return stackSelected;
