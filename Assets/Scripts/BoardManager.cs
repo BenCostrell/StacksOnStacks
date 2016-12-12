@@ -23,7 +23,7 @@ public class BoardManager : MonoBehaviour {
 	public List<BoardSpace> centerSpaces;
 	public int score;
 	public GameObject scoreUI;
-
+	JuicyManager juicy;
 	public bool boardInitialized;
 	public int sideAboutToCollapse;
 
@@ -50,7 +50,7 @@ public class BoardManager : MonoBehaviour {
 		currentHighestRowIndex = 5;
 
 		score = 0;
-
+		juicy = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager>();
 		CreateBoard ();
 		CreateTileBag ();
 		boardInitialized = false;
@@ -207,6 +207,7 @@ public class BoardManager : MonoBehaviour {
 			tileToPlace.spaceQueuedToSpillOnto.provisionalTileCount = tileToPlace.spaceQueuedToSpillOnto.tileList.Count;
 			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
 			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
+			print ("what");
 		}
 	}
 
@@ -214,11 +215,11 @@ public class BoardManager : MonoBehaviour {
 		List<BoardSpace> spacesToCollapse = GetSpaceListFromSideNum ();
 		int[] coords = GetDirectionFromSideNum ();
 		int xDirection = coords[0];
-		int zDirection = coords[1];
+		int zDirection = coords[1]; 
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
 			Spill ();
-			Destroy (space.gameObject);
+			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
 		}
 		if ((sideAboutToCollapse % 2) == 0) {
 			currentNumCols -= 1;

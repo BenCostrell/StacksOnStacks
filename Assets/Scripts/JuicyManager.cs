@@ -3,6 +3,7 @@ using System.Collections;
 
 public class JuicyManager : MonoBehaviour {
 
+
 	BoardManager boardmanager;
 	TurnManager turnmanager;
 
@@ -11,11 +12,16 @@ public class JuicyManager : MonoBehaviour {
 	float boardSpaceBeginY = -15.0f;
 	float tileBeginY = 15.0f;
 
+	float delaySpaceCollapse;
+	int spaceCount;
+
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
 
+		delaySpaceCollapse = 0f;
+		spaceCount = 0;
 		finishedintro = false;
 	}
 	
@@ -26,6 +32,37 @@ public class JuicyManager : MonoBehaviour {
 			finishedintro = true;
 		}
 		
+	}
+
+	public void AnimateTileMove(){
+
+
+	}
+
+	public void CollapseSideSpaces(GameObject go, int numOfSpaces){
+
+		Camera.main.GetComponent<CameraShake> ().enabled = true;
+		Camera.main.GetComponent<CameraShake> ().shakeDuration = 0.5f;
+		iTween.MoveTo(go, iTween.Hash(
+			"position", new Vector3(go.transform.position.x, -7f,go.transform.position.z),
+			"time", 1.0f,
+			"easetype", iTween.EaseType.easeInSine,
+			"delay",delaySpaceCollapse, 
+			"oncomplete", "destroySideSpace",
+			"oncompletetarget",transform.gameObject,
+			"oncompleteparams", go
+		));
+		delaySpaceCollapse += 0.2f;
+		spaceCount++;
+		if (spaceCount == numOfSpaces) {
+			delaySpaceCollapse = 0f;
+			spaceCount = 0;
+		}
+	}
+
+	void destroySideSpace(GameObject go){
+		Destroy (go);
+		Camera.main.GetComponent<CameraShake> ().enabled = false;
 	}
 
 

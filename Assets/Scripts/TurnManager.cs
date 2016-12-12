@@ -190,8 +190,8 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	IEnumerator InitSideCollapse(){
-		yield return new WaitForSeconds (2);
 		boardManager.CollapseSide ();
+		yield return new WaitForSeconds (2);
 		boardManager.CheckForScore ();
 	}
 

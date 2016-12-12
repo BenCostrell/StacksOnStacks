@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1.7830904, g: 1.9789978, b: 2.2888408, a: 1}
+  m_IndirectSpecularColor: {r: 1.783089, g: 1.9789965, b: 2.2888386, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -505,7 +505,7 @@ Light:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 980586313}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 7
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -775,6 +775,7 @@ GameObject:
   - 124: {fileID: 1732913894}
   - 81: {fileID: 1732913893}
   - 114: {fileID: 1732913898}
+  - 114: {fileID: 1732913899}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -864,6 +865,21 @@ MonoBehaviour:
   boardCenter: {fileID: 2145143139}
   turnManagerObj: {fileID: 303297322}
   currentPositionIndex: 0
+--- !u!114 &1732913899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1732913892}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b2ba31f7ea954612b83a3883e9b1222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camTransform: {fileID: 1732913897}
+  shakeDuration: 0.5
+  shakeAmount: 0.1
+  decreaseFactor: 1
 --- !u!1 &1952030826
 GameObject:
   m_ObjectHideFlags: 0
