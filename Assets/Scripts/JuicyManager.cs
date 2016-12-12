@@ -7,6 +7,9 @@ public class JuicyManager : MonoBehaviour {
 	BoardManager boardmanager;
 	TurnManager turnmanager;
 
+	public float xSpillDir;
+	public float zSpillDir;
+
 	bool finishedintro;
 
 	float boardSpaceBeginY = -15.0f;
@@ -14,6 +17,8 @@ public class JuicyManager : MonoBehaviour {
 
 	float delaySpaceCollapse;
 	int spaceCount;
+
+	float delayTileSpill;
 
 	// Use this for initialization
 	void Start () {
@@ -34,9 +39,56 @@ public class JuicyManager : MonoBehaviour {
 		
 	}
 
-	public void AnimateTileMove(){
+	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){
+		if (turnmanager.mode == "Select Tile") {
+			delayTileSpill = 0f;
+		}
 
+		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
+			delayTileSpill += 0.2f;
+			//float delayTile = (float)tileCount;
+			//print(tileCount);
+			iTween.MoveTo (tile.gameObject, iTween.Hash (
+				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
+				"time", 1.0f,
+				"delay", delayTileSpill
+			));
+			print (xSpillDir+", "+zSpillDir);
+			if (xSpillDir == 1) {
+				float vrot = 180.0f;
+				iTween.RotateAdd (tile.gameObject, iTween.Hash (
+					"amount", new Vector3 (vrot, 0, 0),
+					"time", 1.0f,
+					"delay", delayTileSpill
+				));
+			} else if (xSpillDir == -1) {
+				float vrot = -180.0f;
+				iTween.RotateAdd (tile.gameObject, iTween.Hash (
+					"amount", new Vector3 (vrot, 0,0),
+					"time", 1.0f,
+					"delay", delayTileSpill
+				));
+			} else if (zSpillDir == 1) {
+				float vrot = 180.0f;
+				iTween.RotateAdd (tile.gameObject, iTween.Hash (
+					"amount", new Vector3 (0, 0, vrot),
+					"time", 1.0f,
+					"delay", delayTileSpill
+				));
+			} else if (zSpillDir == -1) {
+				float vrot = -180.0f;
+				iTween.RotateAdd (tile.gameObject, iTween.Hash (
+					"amount", new Vector3 (0,0, vrot),
+					"time", 1.0f,
+					"delay", delayTileSpill
+				));
 
+			}
+		
+		} else {
+			tile.transform.position = new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z);
+
+		}
 	}
 
 	public void CollapseSideSpaces(GameObject go, int numOfSpaces){

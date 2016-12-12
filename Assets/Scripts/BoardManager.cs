@@ -180,7 +180,9 @@ public class BoardManager : MonoBehaviour {
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
 		}
-		spaceQueuedToSpillFrom = spaceToSpill;
+		spaceQueuedToSpillFrom = spaceToSpill; 
+		juicy.xSpillDir = xDirection; 
+		juicy.zSpillDir = zDirection;
 	}
 
 	int[] CalculateAdjacentSpace(int x, int z, int xDirection, int zDirection){
@@ -207,7 +209,6 @@ public class BoardManager : MonoBehaviour {
 			tileToPlace.spaceQueuedToSpillOnto.provisionalTileCount = tileToPlace.spaceQueuedToSpillOnto.tileList.Count;
 			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
 			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
-			print ("what");
 		}
 	}
 
