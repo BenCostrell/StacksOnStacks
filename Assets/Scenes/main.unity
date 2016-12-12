@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1.783089, g: 1.9789965, b: 2.2888386, a: 1}
+  m_IndirectSpecularColor: {r: 1.7830904, g: 1.9789978, b: 2.2888408, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -309,6 +309,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7964bd7141e13498dbe074380eee3f6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xSpillDir: 0
+  zSpillDir: 0
 --- !u!4 &223118582
 Transform:
   m_ObjectHideFlags: 0
@@ -459,7 +461,8 @@ MonoBehaviour:
   spaceQueuedToSpillFrom: {fileID: 0}
   centerSpaces: []
   score: 0
-  scoreUI: {fileID: 0}
+  centerSpaceChanged: 0
+  scoreUI: {fileID: 1555608749}
   boardInitialized: 0
   sideAboutToCollapse: 0
   mats:

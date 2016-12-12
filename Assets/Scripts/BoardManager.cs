@@ -22,6 +22,7 @@ public class BoardManager : MonoBehaviour {
 	public BoardSpace spaceQueuedToSpillFrom;
 	public List<BoardSpace> centerSpaces;
 	public int score;
+	public bool centerSpaceChanged;
 	public GameObject scoreUI;
 	JuicyManager juicy;
 	public bool boardInitialized;
@@ -50,6 +51,8 @@ public class BoardManager : MonoBehaviour {
 		currentHighestRowIndex = 5;
 
 		score = 0;
+		centerSpaceChanged = false;
+
 		juicy = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager>();
 		CreateBoard ();
 		CreateTileBag ();
@@ -87,6 +90,7 @@ public class BoardManager : MonoBehaviour {
 		boardSpace = Instantiate(spacePrefab, location, Quaternion.LookRotation(Vector3.down)) as GameObject;
 		boardSpace.GetComponent<MeshRenderer>().material = mats[materialIndex];
 		BoardSpace boardSpaceScript = boardSpace.GetComponent<BoardSpace> ();
+		boardSpaceScript.color = materialIndex;
 		boardSpaceScript.boardManager = this;
 		boardSpaceScript.colNum = colNum;
 		boardSpaceScript.rowNum = rowNum;
@@ -219,7 +223,7 @@ public class BoardManager : MonoBehaviour {
 		int zDirection = coords[1]; 
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
-			Spill ();
+			//Spill ();
 			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
 		}
 		if ((sideAboutToCollapse % 2) == 0) {
@@ -277,30 +281,28 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public void CheckForScore(){
-		bool color0 = false;
-		bool color1 = false;
-		bool color2 = false;
-		bool color3 = false;
-		foreach (BoardSpace space in centerSpaces) {
-			List<Tile> tileList = space.tileList;
-			int count = tileList.Count;
-			if (count > 0) {
-				Tile tile = tileList [count - 1];
-				int tileColor = tile.color;
-				if (tileColor == 0) {
+		if (centerSpaceChanged) {
+			bool color0 = false;
+			bool color1 = false;
+			bool color2 = false;
+			bool color3 = false;
+			foreach (BoardSpace space in centerSpaces) {
+				int color = space.color;
+				if (color == 0) {
 					color0 = true;
-				} else if (tileColor == 1) {
+				} else if (color == 1) {
 					color1 = true;
-				} else if (tileColor == 2) {
+				} else if (color == 2) {
 					color2 = true;
-				} else if (tileColor == 3) {
+				} else if (color == 3) {
 					color3 = true;
 				}
 			}
-		}
-		if (color0 && color1 && color2 && color3) {
-			score += 1;
-			scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
+			if (color0 && color1 && color2 && color3) {
+				score += 1;
+				scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
+			}
+			centerSpaceChanged = false;
 		}
 	}
 
