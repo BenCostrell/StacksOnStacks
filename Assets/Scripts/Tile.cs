@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour {
 
 	private Renderer renderer;
 	public BoardSpace spaceQueuedToSpillOnto;
+	public int color;
 
 	// Use this for initialization
 	void Start () {

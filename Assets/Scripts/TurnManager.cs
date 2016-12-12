@@ -92,7 +92,7 @@ public class TurnManager : MonoBehaviour {
 					Vector3 topTileLocation = selectedSpace.tileList [selectedSpace.tileList.Count - 1].transform.position;
 					Destroy (spillUI);
 					spillUI = Instantiate (spillUIPrefab, 
-						new Vector3 (topTileLocation.x-9.2f, topTileLocation.y + 9.2f, topTileLocation.z-9.2f), Quaternion.identity) as GameObject;
+						new Vector3 (topTileLocation.x-9.2f, topTileLocation.y+9.2f, topTileLocation.z-9.2f), Quaternion.identity) as GameObject;
 				}
 			}
 		}
@@ -119,12 +119,14 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	void FinalizeTilePlacement(){
+		spawnedTile.transform.parent = null;
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
 		mode = "Select Stack";
+		boardManager.CheckForScore ();
 		if (!firstTileFinalized) {
 			firstTileFinalized = true;
 			if ((space.colNum == 0) && (space.rowNum != 0)) {
@@ -183,12 +185,14 @@ public class TurnManager : MonoBehaviour {
 		}
 		boardManager.Spill ();
 		mode = "Spawn Tile";
+		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
 	}
 
 	IEnumerator InitSideCollapse(){
 		yield return new WaitForSeconds (2);
 		boardManager.CollapseSide ();
+		boardManager.CheckForScore ();
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){

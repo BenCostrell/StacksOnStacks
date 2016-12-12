@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour {
 
@@ -19,6 +20,9 @@ public class BoardManager : MonoBehaviour {
 	public int initialNumberOfEachTileColor;
 	public List<Tile> tilesQueuedToSpill;
 	public BoardSpace spaceQueuedToSpillFrom;
+	public List<BoardSpace> centerSpaces;
+	public int score;
+	public GameObject scoreUI;
 
 	public bool boardInitialized;
 	public int sideAboutToCollapse;
@@ -44,6 +48,8 @@ public class BoardManager : MonoBehaviour {
 		currentLowestRowIndex = 0;
 		currentHighestColIndex = 5;
 		currentHighestRowIndex = 5;
+
+		score = 0;
 
 		CreateBoard ();
 		CreateTileBag ();
@@ -86,6 +92,7 @@ public class BoardManager : MonoBehaviour {
 		boardSpaceScript.rowNum = rowNum;
 		if (IsCentered (colNum, numCols) && IsCentered (rowNum, numRows)) {
 			boardSpaceScript.isCenterTile = true;
+			centerSpaces.Add (boardSpaceScript);
 		} else {
 			boardSpaceScript.isCenterTile = false;
 		}
@@ -97,6 +104,7 @@ public class BoardManager : MonoBehaviour {
 		Vector3 offscreen = new Vector3(-1000, -1000, -1000);
 		tile = Instantiate(tilePrefab, offscreen, Quaternion.identity) as GameObject;
 		tile.GetComponent<MeshRenderer>().material = mats[materialIndex];
+		tile.GetComponent<Tile> ().color = materialIndex - 3;
 		tileBag.Add(tile.GetComponent<Tile>());
 	}
 
@@ -210,7 +218,6 @@ public class BoardManager : MonoBehaviour {
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
 			Spill ();
-			Debug.Log ("collapsing space " + space.colNum + ", " + space.rowNum);
 			Destroy (space.gameObject);
 		}
 		if ((sideAboutToCollapse % 2) == 0) {
@@ -267,5 +274,32 @@ public class BoardManager : MonoBehaviour {
 		return coords;
 	}
 
+	public void CheckForScore(){
+		bool color0 = false;
+		bool color1 = false;
+		bool color2 = false;
+		bool color3 = false;
+		foreach (BoardSpace space in centerSpaces) {
+			List<Tile> tileList = space.tileList;
+			int count = tileList.Count;
+			if (count > 0) {
+				Tile tile = tileList [count - 1];
+				int tileColor = tile.color;
+				if (tileColor == 0) {
+					color0 = true;
+				} else if (tileColor == 1) {
+					color1 = true;
+				} else if (tileColor == 2) {
+					color2 = true;
+				} else if (tileColor == 3) {
+					color3 = true;
+				}
+			}
+		}
+		if (color0 && color1 && color2 && color3) {
+			score += 1;
+			scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
+		}
+	}
 
 }

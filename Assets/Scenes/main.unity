@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 1.783089, g: 1.9789965, b: 2.2888386, a: 1}
+  m_IndirectSpecularColor: {r: 1.7830904, g: 1.9789978, b: 2.2888408, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -457,6 +457,9 @@ MonoBehaviour:
   initialNumberOfEachTileColor: 20
   tilesQueuedToSpill: []
   spaceQueuedToSpillFrom: {fileID: 0}
+  centerSpaces: []
+  score: 0
+  scoreUI: {fileID: 0}
   boardInitialized: 0
   sideAboutToCollapse: 0
   mats:
@@ -690,7 +693,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'SCORE:'
+  m_Text: 'SCORE: 0'
 --- !u!222 &1555608752
 CanvasRenderer:
   m_ObjectHideFlags: 0
