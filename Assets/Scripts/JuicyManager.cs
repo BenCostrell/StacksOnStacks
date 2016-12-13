@@ -115,7 +115,7 @@ public class JuicyManager : MonoBehaviour {
 	void destroySideSpace(GameObject go){
 		Destroy (go);
 		Camera.main.GetComponent<CameraShake> ().enabled = false;
-		boardmanager.Spill ();
+		//boardmanager.Spill ();
 	}
 
 

@@ -222,11 +222,7 @@ public class BoardManager : MonoBehaviour {
 		int[] coords = GetDirectionFromSideNum ();
 		int xDirection = coords[0];
 		int zDirection = coords[1]; 
-		foreach (BoardSpace space in spacesToCollapse) {
-			QueueSpill (space, xDirection, zDirection);
-			//Spill ();
-			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
-		}
+
 		if ((sideAboutToCollapse % 2) == 0) {
 			currentNumCols -= 1;
 			if (sideAboutToCollapse == 0) {
@@ -242,6 +238,13 @@ public class BoardManager : MonoBehaviour {
 				currentHighestRowIndex -= 1;
 			}
 		}
+
+		foreach (BoardSpace space in spacesToCollapse) {
+			QueueSpill (space, xDirection, zDirection);
+			Spill ();
+			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
+		}
+
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
 	}
 
