@@ -114,12 +114,12 @@ public class TurnManager : MonoBehaviour {
 				mode = "Place Tile 1";
 				Vector3 pointOnBoard = hit.transform.position;
 				spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
+				spawnedTile.transform.parent = null;
 			}
 		}
 	}
 
 	void FinalizeTilePlacement(){
-		spawnedTile.transform.parent = null;
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
@@ -174,6 +174,9 @@ public class TurnManager : MonoBehaviour {
 	public void UndoQueueSpill(){
 		spillUI.SetActive (true);
 		boardManager.spaceQueuedToSpillFrom.ResetTilesToPosition ();
+		foreach (Tile tile in boardManager.tilesQueuedToSpill) {
+			tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
+		}
 		mode = "Queue Spill";
 	}
 

@@ -184,6 +184,7 @@ public class BoardManager : MonoBehaviour {
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
 			spaceToSpillOnto.PositionNewTile (tileToMove);
 		}
+		juicy.delayTileSpill = 0f;
 		spaceQueuedToSpillFrom = spaceToSpill; 
 		juicy.xSpillDir = xDirection; 
 		juicy.zSpillDir = zDirection;

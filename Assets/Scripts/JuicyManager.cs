@@ -18,7 +18,7 @@ public class JuicyManager : MonoBehaviour {
 	float delaySpaceCollapse;
 	int spaceCount;
 
-	float delayTileSpill;
+	public float delayTileSpill;
 
 	// Use this for initialization
 	void Start () {
@@ -115,6 +115,7 @@ public class JuicyManager : MonoBehaviour {
 	void destroySideSpace(GameObject go){
 		Destroy (go);
 		Camera.main.GetComponent<CameraShake> ().enabled = false;
+		boardmanager.Spill ();
 	}
 
 
