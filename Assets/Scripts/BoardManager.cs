@@ -182,7 +182,7 @@ public class BoardManager : MonoBehaviour {
 			boardSpaceZ = targetCoords [1];
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
-			spaceToSpillOnto.PositionNewTile (tileToMove);
+			spaceToSpillOnto.PositionNewTile (tileToMove, true);
 		}
 		juicy.delayTileSpill = 0f;
 		spaceQueuedToSpillFrom = spaceToSpill; 
