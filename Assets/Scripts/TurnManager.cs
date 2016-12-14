@@ -91,8 +91,8 @@ public class TurnManager : MonoBehaviour {
 					mode = "Queue Spill";
 					Vector3 topTileLocation = selectedSpace.tileList [selectedSpace.tileList.Count - 1].transform.position;
 					Destroy (spillUI);
-					spillUI = Instantiate (spillUIPrefab, 
-						new Vector3 (topTileLocation.x-9.2f, topTileLocation.y+9.2f, topTileLocation.z-9.2f), Quaternion.identity) as GameObject;
+					spillUI = Instantiate(spillUIPrefab,
+						new Vector3 (topTileLocation.x, topTileLocation.y, topTileLocation.z), Quaternion.identity) as GameObject;
 				}
 			}
 		}

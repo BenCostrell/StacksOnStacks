@@ -31,11 +31,10 @@ public class CameraController : MonoBehaviour {
 
 		iTween.RotateTo (transform.parent.gameObject, iTween.Hash ("rotation", rotation, "time", 0.8f,"easetype", "easeOutBack"));
 
-		/*
-		Vector3 uirotation = new Vector3 (rotation.x + turnManager.spillUI.transform.rotation.x,
-			                     rotation.y + turnManager.spillUI.transform.rotation.y,
-			                     rotation.z + turnManager.spillUI.transform.rotation.z);
-		if (turnManager.spillUI.activeSelf) {
+		if (turnManager.spillUI != null) {
+			Vector3 uirotation = new Vector3 (0, rotation.y, 0);
+			Vector3 uisubrotation = new Vector3 (0,-rotation.y, 0);
+
 			iTween.RotateTo (turnManager.spillUI.gameObject, iTween.Hash(
 				"rotation", uirotation,
 				"time", 0.8f,
@@ -43,6 +42,13 @@ public class CameraController : MonoBehaviour {
 			
 			));
 
-		}*/
+			GameObject spillUIchild = turnManager.spillUI.transform.GetChild (0).gameObject;
+			iTween.RotateTo (spillUIchild, iTween.Hash (
+				"islocal", true,
+				"rotation", uisubrotation,
+				"time", 0.8f,
+				"easetype", "easeOutBack"
+			));
+		}
 	}
 }
