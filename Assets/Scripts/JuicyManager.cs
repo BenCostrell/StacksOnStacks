@@ -6,6 +6,7 @@ public class JuicyManager : MonoBehaviour {
 
 	BoardManager boardmanager;
 	TurnManager turnmanager;
+	UIManager uimanager;
 
 	public float xSpillDir;
 	public float zSpillDir;
@@ -25,6 +26,8 @@ public class JuicyManager : MonoBehaviour {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
 
+		uimanager = GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ();
+
 		delaySpaceCollapse = 0f;
 		spaceCount = 0;
 		finishedintro = false;
@@ -40,8 +43,9 @@ public class JuicyManager : MonoBehaviour {
 	}
 
 	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){
-		if (turnmanager.mode == "Select Tile") {
+		if (turnmanager.mode == "Select Tile" || uimanager.undoSpill) {
 			delayTileSpill = 0f;
+			uimanager.undoSpill = false;
 		}
 
 		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
@@ -50,36 +54,35 @@ public class JuicyManager : MonoBehaviour {
 			//print(tileCount);
 			iTween.MoveTo (tile.gameObject, iTween.Hash (
 				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
-				"time", 1.0f,
+				"time", 0.4f,
 				"delay", delayTileSpill
 			));
-			print (xSpillDir+", "+zSpillDir);
-			if (xSpillDir == 1) {
+			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0, 0),
-					"time", 1.0f,
+					"time", 0.4f,
 					"delay", delayTileSpill
 				));
-			} else if (xSpillDir == -1) {
+			} else if (xSpillDir == 0 && zSpillDir == -1) { //down
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0,0),
-					"time", 1.0f,
+					"time", 0.4f,
 					"delay", delayTileSpill
 				));
-			} else if (zSpillDir == 1) {
+			} else if (xSpillDir == -1 && zSpillDir == 0) { //left
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0, 0, vrot),
-					"time", 1.0f,
+					"time", 0.4f,
 					"delay", delayTileSpill
 				));
-			} else if (zSpillDir == -1) {
+			} else if (xSpillDir == 1 && zSpillDir == 0) { //right
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0,0, vrot),
-					"time", 1.0f,
+					"time", 0.4f,
 					"delay", delayTileSpill
 				));
 

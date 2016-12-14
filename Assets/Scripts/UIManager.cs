@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour {
 
 	Button[] buttons;
 
+	public bool undoSpill;
 
 
 	// Use this for initialization
@@ -18,6 +19,7 @@ public class UIManager : MonoBehaviour {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 
 		buttons = GetComponentsInChildren<Button>(true);
+		undoSpill = false;
 	}
 	
 	// Update is called once per frame
@@ -34,5 +36,6 @@ public class UIManager : MonoBehaviour {
 
 	public void UndoButtonClick(){
 		turnmanager.UndoQueueSpill ();
+		undoSpill = true;
 	}
 }
