@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class JuicyManager : MonoBehaviour {
 
@@ -21,12 +22,14 @@ public class JuicyManager : MonoBehaviour {
 
 	public float delayTileSpill;
 
+	List<float> stackHeights;
+
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
-
 		uimanager = GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ();
+		stackHeights = new List<float> ();
 
 		delaySpaceCollapse = 0f;
 		spaceCount = 0;
@@ -45,45 +48,77 @@ public class JuicyManager : MonoBehaviour {
 	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){
 		if (turnmanager.mode == "Select Tile" || uimanager.undoSpill) {
 			delayTileSpill = 0f;
+			stackHeights.Clear ();
 			uimanager.undoSpill = false;
 		}
 
 		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
-			delayTileSpill += 0.2f;
-			//float delayTile = (float)tileCount;
-			//print(tileCount);
+			delayTileSpill += 1.0f;
+			float tileTime = 2.0f;
+
+			float midpointx = (pos.x + tile.transform.position.x) / 2.0f;
+			float midpointz = (pos.z + tile.transform.position.z) / 2.0f;
+			stackHeights.Add (tileCount * 0.2f + 0.1f);
+			int highestStack = 0;
+
+			for (int i = 0; i < stackHeights.Count; i++) {
+				if (stackHeights [i] > stackHeights[highestStack]) {
+					highestStack = i;
+				}
+			}
+			float height = stackHeights[highestStack] + 1f;
+			Vector3 midpoint = new Vector3(midpointx, height, midpointz);
+			Vector3 endpoint = new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z);
+			Vector3[] path = new Vector3[2]{ midpoint, endpoint };
+
+
 			iTween.MoveTo (tile.gameObject, iTween.Hash (
 				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
-				"time", 0.7f,
+				"path",path,
+				"time", tileTime,
 				"delay", delayTileSpill
+
 			));
+			//print (xSpillDir + ", " + zSpillDir);
 			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0, 0),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == 0 && zSpillDir == -1) { //down
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0,0),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == -1 && zSpillDir == 0) { //left
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0, 0, vrot),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == 1 && zSpillDir == 0) { //right
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0,0, vrot),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 
 			}
@@ -92,6 +127,11 @@ public class JuicyManager : MonoBehaviour {
 			tile.transform.position = new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z);
 
 		}
+	}
+
+	void setTileStraight(GameObject go){
+		go.transform.eulerAngles = new Vector3 (0, 0, 0);
+
 	}
 
 	public void CollapseSideSpaces(GameObject go, int numOfSpaces){
