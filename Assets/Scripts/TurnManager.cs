@@ -85,18 +85,11 @@ public class TurnManager : MonoBehaviour {
 					stackSelected = true;
 					if (selectedSpace != null) {
 						if (selectedSpace != space) {
-							foreach (Tile tile in selectedSpace.tileList) {
-								tile.GetComponentInChildren<ParticleSystem> ().Stop ();
-								tile.GetComponentInChildren<ParticleSystem> ().Clear ();
-							}
-							foreach (Tile tile in space.tileList) {
-								tile.GetComponentInChildren<ParticleSystem> ().Play ();
-							}
+							ToggleStackParticles (selectedSpace, false);
+							ToggleStackParticles (space, true);
 						}
 					} else {
-						foreach (Tile tile in space.tileList) {
-							tile.GetComponentInChildren<ParticleSystem> ().Play ();
-						}
+						ToggleStackParticles (space, true);
 					}
 					selectedSpace = space;
 					mode = "Queue Spill";
@@ -108,6 +101,19 @@ public class TurnManager : MonoBehaviour {
 			}
 		}
 		return stackSelected;
+	}
+
+	void ToggleStackParticles(BoardSpace space, bool on){
+		if (on) {
+			foreach (Tile tile in space.tileList) {
+				tile.GetComponentInChildren<ParticleSystem> ().Play ();
+			}
+		} else {
+			foreach (Tile tile in selectedSpace.tileList) {
+				tile.GetComponentInChildren<ParticleSystem> ().Stop ();
+				tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+			}
+		}
 	}
 
 	void SelectTile(Ray ray){
@@ -165,21 +171,25 @@ public class TurnManager : MonoBehaviour {
 	void InitQueueSpill(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spillUILayer)) {
-			spillUI.SetActive (false);
 			int xDirection = 0;
 			int zDirection = 0;
 			if (hit.collider.transform.name == "MinusX") {
 				xDirection = -1;
-			} else if (hit.collider.transform.name == "PlusX"){
+			} else if (hit.collider.transform.name == "PlusX") {
 				xDirection = 1;
-			}else if (hit.collider.transform.name == "MinusZ") {
+			} else if (hit.collider.transform.name == "MinusZ") {
 				zDirection = -1;
-			} else if (hit.collider.transform.name == "PlusZ"){
+			} else if (hit.collider.transform.name == "PlusZ") {
 				zDirection = 1;
 			}
 			boardManager.QueueSpill (selectedSpace, xDirection, zDirection);
 			mode = "Finalize Spill";
+		} else {
+			mode = "Select Stack";
+			ToggleStackParticles (selectedSpace, false);
+			selectedSpace = null;
 		}
+		spillUI.SetActive (false);
 	}
 
 	public void UndoQueueSpill(){
@@ -205,8 +215,16 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	IEnumerator InitSideCollapse(){
+		float wait;
+		if (boardManager.scoring) {
+			wait = 2.5f;
+			boardManager.scoring = false;
+		} else {
+			wait = 0.5f;
+		}
+		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (2.5f);
+		yield return new WaitForSeconds (2f);
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {

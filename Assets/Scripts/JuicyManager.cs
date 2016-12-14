@@ -13,6 +13,7 @@ public class JuicyManager : MonoBehaviour {
 	public float zSpillDir;
 
 	bool finishedintro;
+	public bool scoring;
 
 	float boardSpaceBeginY = -15.0f;
 	float tileBeginY = 15.0f;
@@ -43,6 +44,14 @@ public class JuicyManager : MonoBehaviour {
 			finishedintro = true;
 		}
 		
+	}
+
+	public void ScoreAnimation(){
+		float delay = 0;
+		foreach (BoardSpace space in boardmanager.centerSpaces) {
+			iTween.PunchScale (space.gameObject, iTween.Hash ("amount", Vector3.forward,"time", 2, "delay", delay));
+			delay += 0.5f;
+		}
 	}
 
 	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){

@@ -43,7 +43,6 @@ public class UIManager : MonoBehaviour {
 	public void UndoButtonClick(){
 		turnmanager.UndoQueueSpill ();
 		undoSpill = true;
-		Debug.Log ("undo");
 	}
 
 	public void ConfirmButtonClick(){

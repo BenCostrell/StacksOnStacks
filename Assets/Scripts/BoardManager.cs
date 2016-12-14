@@ -22,6 +22,7 @@ public class BoardManager : MonoBehaviour {
 	public BoardSpace spaceQueuedToSpillFrom;
 	public List<BoardSpace> centerSpaces;
 	public int score;
+	public bool scoring;
 	public bool centerSpaceChanged;
 	public GameObject scoreUI;
 	JuicyManager juicy;
@@ -52,6 +53,7 @@ public class BoardManager : MonoBehaviour {
 
 		score = 0;
 		centerSpaceChanged = false;
+		scoring = false;
 
 		juicy = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager>();
 		CreateBoard ();
@@ -312,28 +314,11 @@ public class BoardManager : MonoBehaviour {
 			if (color0 && color1 && color2 && color3) {
 				score += 1;
 				scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
+				scoring = true;
+				juicy.ScoreAnimation ();
 			}
 			centerSpaceChanged = false;
 		}
-	}
-
-	public bool IsAnythingTweening(){
-		bool tweenHappening = false;
-		foreach (BoardSpace space in board) {
-			if (space != null) {
-				if (space.gameObject.GetComponent<iTween> ()) {
-					tweenHappening = true;
-					break;
-				}
-				foreach (Tile tile in space.tileList) {
-					if (tile.gameObject.GetComponent<iTween> ()) {
-						tweenHappening = true;
-						break;
-					}
-				}
-			}
-		}
-		return tweenHappening;
 	}
 
 }

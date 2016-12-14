@@ -321,6 +321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   xSpillDir: 0
   zSpillDir: 0
+  scoring: 0
   delayTileSpill: 0
 --- !u!4 &223118582
 Transform:
@@ -474,6 +475,7 @@ MonoBehaviour:
   spaceQueuedToSpillFrom: {fileID: 0}
   centerSpaces: []
   score: 0
+  scoring: 0
   centerSpaceChanged: 0
   scoreUI: {fileID: 1555608749}
   boardInitialized: 0
@@ -1322,7 +1324,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 400}
+  m_SizeDelta: {x: 800, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2121481101
 MonoBehaviour:
@@ -1345,11 +1347,11 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: 10daad3250a104306b3f6fe972ffbcf0, type: 3}
-    m_FontSize: 50
+    m_FontSize: 80
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 5
-    m_MaxSize: 50
+    m_MaxSize: 80
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
