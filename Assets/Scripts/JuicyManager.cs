@@ -50,40 +50,55 @@ public class JuicyManager : MonoBehaviour {
 
 		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
 			delayTileSpill += 0.2f;
+			float tileTime = 0.7f;
 			//float delayTile = (float)tileCount;
 			//print(tileCount);
 			iTween.MoveTo (tile.gameObject, iTween.Hash (
 				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
-				"time", 0.7f,
+				"time", tileTime,
 				"delay", delayTileSpill
+
 			));
+			print (xSpillDir + ", " + zSpillDir);
 			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0, 0),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == 0 && zSpillDir == -1) { //down
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0,0),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == -1 && zSpillDir == 0) { //left
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0, 0, vrot),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 			} else if (xSpillDir == 1 && zSpillDir == 0) { //right
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0,0, vrot),
-					"time", 0.7f,
-					"delay", delayTileSpill
+					"time", tileTime,
+					"delay", delayTileSpill,
+					"oncomplete", "setTileStraight",
+					"oncompletetarget",transform.gameObject,
+					"oncompleteparams", tile.gameObject
 				));
 
 			}
@@ -92,6 +107,11 @@ public class JuicyManager : MonoBehaviour {
 			tile.transform.position = new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z);
 
 		}
+	}
+
+	void setTileStraight(GameObject go){
+		go.transform.eulerAngles = new Vector3 (0, 0, 0);
+
 	}
 
 	public void CollapseSideSpaces(GameObject go, int numOfSpaces){
