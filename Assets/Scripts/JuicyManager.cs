@@ -52,7 +52,7 @@ public class JuicyManager : MonoBehaviour {
 			uimanager.undoSpill = false;
 		}
 
-		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
+		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Interim")) {
 			delayTileSpill += 0.4f;
 			float tileTime = 1.0f;
 

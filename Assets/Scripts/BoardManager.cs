@@ -317,4 +317,23 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
+	public bool IsAnythingTweening(){
+		bool tweenHappening = false;
+		foreach (BoardSpace space in board) {
+			if (space != null) {
+				if (space.gameObject.GetComponent<iTween> ()) {
+					tweenHappening = true;
+					break;
+				}
+				foreach (Tile tile in space.tileList) {
+					if (tile.gameObject.GetComponent<iTween> ()) {
+						tweenHappening = true;
+						break;
+					}
+				}
+			}
+		}
+		return tweenHappening;
+	}
+
 }

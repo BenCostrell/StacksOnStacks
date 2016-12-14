@@ -24,6 +24,7 @@ public class TurnManager : MonoBehaviour {
 	public GameObject GameOverUI;
 	private bool firstTileFinalized;
 	private int numSidesCollapsed;
+	public bool anythingTweening;
 
 
 	// Use this for initialization
@@ -33,38 +34,42 @@ public class TurnManager : MonoBehaviour {
 		rotationIndex = 0;
 		firstTileFinalized = false;
 		numSidesCollapsed = 0;
+		GameOverUI.SetActive (false);
+		anythingTweening = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		IsAnythingTweening ();
 		if (mode == "Game Over") {
-			
-		}
-		else if (mode == "Spawn Tile") {
-			DrawTileToPlace ();
-			mode = "Select Tile";
-		}
-		if (Input.GetMouseButtonDown (0)) {
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if (mode == "Select Tile") {
-				SelectTile (ray);
-			} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
-				PlaceTile (ray);
-			} else if (mode == "Select Stack") {
-				SelectStack (ray);
-			} else if (mode == "Queue Spill") {
-				if (!SelectStack (ray)) {
-					InitQueueSpill (ray);
-				}
-			} else if (mode == "Finalize Spill") {
-				//UndoQueueSpill ();
+			GameOverUI.SetActive (true);
+		} else if (!anythingTweening) { 
+			if (mode == "Spawn Tile") {
+				DrawTileToPlace ();
+				mode = "Select Tile";
 			}
-		}
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			if (mode == "Place Tile 1") {
-				FinalizeTilePlacement ();
-			} else if (mode == "Finalize Spill") {
-				FinalizeSpill ();
+			if (Input.GetMouseButtonDown (0)) {
+				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+				if (mode == "Select Tile") {
+					SelectTile (ray);
+				} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
+					PlaceTile (ray);
+				} else if (mode == "Select Stack") {
+					SelectStack (ray);
+				} else if (mode == "Queue Spill") {
+					if (!SelectStack (ray)) {
+						InitQueueSpill (ray);
+					}
+				} else if (mode == "Finalize Spill") {
+					//UndoQueueSpill ();
+				}
+			}
+			if (Input.GetKeyDown (KeyCode.Space)) {
+				if (mode == "Place Tile 1") {
+					FinalizeTilePlacement ();
+				} else if (mode == "Finalize Spill") {
+					FinalizeSpill ();
+				}
 			}
 		}
 	}
@@ -125,7 +130,7 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 
-	void FinalizeTilePlacement(){
+	public void FinalizeTilePlacement(){
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
@@ -187,14 +192,14 @@ public class TurnManager : MonoBehaviour {
 		mode = "Queue Spill";
 	}
 
-	void FinalizeSpill(){
+	public void FinalizeSpill(){
 		foreach (Tile tile in boardManager.tilesQueuedToSpill) {
 			ParticleSystem ps = tile.GetComponentInChildren<ParticleSystem> ();
 			ps.Stop ();
 			ps.Clear();
 		}
+		mode = "Interim";
 		boardManager.Spill (boardManager.tilesQueuedToSpill);
-		mode = "Spawn Tile";
 		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
 	}
@@ -207,6 +212,8 @@ public class TurnManager : MonoBehaviour {
 		if (numSidesCollapsed == 8) {
 			yield return new WaitForSeconds (1);
 			mode = "Game Over";
+		} else {
+			mode = "Spawn Tile";
 		}
 	}
 
@@ -218,5 +225,24 @@ public class TurnManager : MonoBehaviour {
 		coords [0] = col;
 		coords [1] = row;
 		return boardManager.board[coords[0], coords[1]];
+	}
+
+	void IsAnythingTweening(){
+		bool tweenHappening = false;
+		foreach (BoardSpace space in boardManager.board) {
+			if (space != null) {
+				if (space.gameObject.GetComponent<iTween> ()) {
+					tweenHappening = true;
+					break;
+				}
+				foreach (Tile tile in space.tileList) {
+					if (tile.gameObject.GetComponent<iTween> ()) {
+						tweenHappening = true;
+						break;
+					}
+				}
+			}
+		}
+		anythingTweening = tweenHappening;
 	}
 }

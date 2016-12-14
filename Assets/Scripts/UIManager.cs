@@ -26,16 +26,31 @@ public class UIManager : MonoBehaviour {
 	void Update () {
 
 		//undo button
-		if (turnmanager.mode == "Finalize Spill") {
+
+		if (turnmanager.mode == "Finalize Spill" && !turnmanager.anythingTweening) {
 			//undobutton.GetComponent<Animator> ().SetTrigger ("Disabled");
-			buttons[0].interactable = true;
+			buttons [0].interactable = true;
 		} else {
-			buttons[0].interactable = false;
+			buttons [0].interactable = false;
+		}
+		if ((turnmanager.mode == "Place Tile 1" || turnmanager.mode == "Finalize Spill") && !turnmanager.anythingTweening) {
+			buttons [1].interactable = true;
+		} else {
+			buttons [1].interactable = false;
 		}
 	}
 
 	public void UndoButtonClick(){
 		turnmanager.UndoQueueSpill ();
 		undoSpill = true;
+		Debug.Log ("undo");
+	}
+
+	public void ConfirmButtonClick(){
+		if (turnmanager.mode == "Place Tile 1") {
+			turnmanager.FinalizeTilePlacement ();
+		} else if (turnmanager.mode == "Finalize Spill") {
+			turnmanager.FinalizeSpill ();
+		}
 	}
 }
