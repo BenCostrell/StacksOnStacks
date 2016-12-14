@@ -21,7 +21,9 @@ public class TurnManager : MonoBehaviour {
 	public GameObject pivotPoint;
 	public GameObject spillUIPrefab;
 	public GameObject spillUI;
+	public GameObject GameOverUI;
 	private bool firstTileFinalized;
+	private int numSidesCollapsed;
 
 
 	// Use this for initialization
@@ -30,11 +32,15 @@ public class TurnManager : MonoBehaviour {
 		mode = "Spawn Tile"; //spawn tile, select tile, place tile 0 (you haven't placed it anywhere yet), place tile 1 (you've placed it somewhere, but not finalized), select stack
 		rotationIndex = 0;
 		firstTileFinalized = false;
+		numSidesCollapsed = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (mode == "Spawn Tile") {
+		if (mode == "Game Over") {
+			
+		}
+		else if (mode == "Spawn Tile") {
 			DrawTileToPlace ();
 			mode = "Select Tile";
 		}
@@ -197,6 +203,11 @@ public class TurnManager : MonoBehaviour {
 		boardManager.CollapseSide ();
 		yield return new WaitForSeconds (2.5f);
 		boardManager.CheckForScore ();
+		numSidesCollapsed += 1;
+		if (numSidesCollapsed == 8) {
+			yield return new WaitForSeconds (1);
+			mode = "Game Over";
+		}
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){
