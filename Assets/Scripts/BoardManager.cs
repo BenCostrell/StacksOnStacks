@@ -142,8 +142,8 @@ public class BoardManager : MonoBehaviour {
 					Tile secondTileToPlace;
 					firstTileToPlace = DrawTile();
 					secondTileToPlace = DrawTile ();
-					board [i, j].AddTile (firstTileToPlace);
-					board [i, j].AddTile (secondTileToPlace);
+					board [i, j].AddTile (firstTileToPlace, true);
+					board [i, j].AddTile (secondTileToPlace, true);
 				}
 			}
 		}
@@ -185,7 +185,7 @@ public class BoardManager : MonoBehaviour {
 			boardSpaceZ = targetCoords [1];
 			BoardSpace spaceToSpillOnto = board [boardSpaceX, boardSpaceZ];
 			tileToMove.spaceQueuedToSpillOnto = spaceToSpillOnto;
-			spaceToSpillOnto.PositionNewTile (tileToMove, true);
+			spaceToSpillOnto.PositionNewTile (tileToMove);
 		}
 
 		spaceQueuedToSpillFrom = spaceToSpill; 
@@ -214,7 +214,7 @@ public class BoardManager : MonoBehaviour {
 		foreach (Tile tileToPlace in tilesQueuedToSpill){
 			tileToPlace.spaceQueuedToSpillOnto.provisionalTileCount = tileToPlace.spaceQueuedToSpillOnto.tileList.Count;
 			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
-			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace);
+			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace, false);
 		}
 	}
 

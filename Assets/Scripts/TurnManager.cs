@@ -121,7 +121,7 @@ public class TurnManager : MonoBehaviour {
 
 	void FinalizeTilePlacement(){
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
-		space.AddTile (spawnedTile);
+		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
 		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
