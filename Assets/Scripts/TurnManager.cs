@@ -51,7 +51,7 @@ public class TurnManager : MonoBehaviour {
 					InitQueueSpill (ray);
 				}
 			} else if (mode == "Finalize Spill") {
-				UndoQueueSpill ();
+				//UndoQueueSpill ();
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Space)) {
@@ -177,6 +177,7 @@ public class TurnManager : MonoBehaviour {
 		foreach (Tile tile in boardManager.tilesQueuedToSpill) {
 			tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
 		}
+		boardManager.spaceQueuedToSpillFrom.provisionalTileCount = boardManager.spaceQueuedToSpillFrom.tileList.Count;
 		mode = "Queue Spill";
 	}
 
