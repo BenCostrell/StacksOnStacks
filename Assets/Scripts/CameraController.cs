@@ -19,7 +19,6 @@ public class CameraController : MonoBehaviour {
 		if(Input.GetButtonDown("rotateClockwise")){
 			RotateBoard(1);
 		}
-
 		if(Input.GetButtonDown("rotateCounterclockwise")){
 			RotateBoard(-1);
 		}
@@ -32,5 +31,18 @@ public class CameraController : MonoBehaviour {
 
 		iTween.RotateTo (transform.parent.gameObject, iTween.Hash ("rotation", rotation, "time", 0.8f,"easetype", "easeOutBack"));
 
+		/*
+		Vector3 uirotation = new Vector3 (rotation.x + turnManager.spillUI.transform.rotation.x,
+			                     rotation.y + turnManager.spillUI.transform.rotation.y,
+			                     rotation.z + turnManager.spillUI.transform.rotation.z);
+		if (turnManager.spillUI.activeSelf) {
+			iTween.RotateTo (turnManager.spillUI.gameObject, iTween.Hash(
+				"rotation", uirotation,
+				"time", 0.8f,
+				"easetype", "easeOutBack"
+			
+			));
+
+		}*/
 	}
 }

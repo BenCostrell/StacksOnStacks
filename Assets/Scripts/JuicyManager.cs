@@ -53,8 +53,8 @@ public class JuicyManager : MonoBehaviour {
 		}
 
 		if (finishedintro && (turnmanager.mode == "Queue Spill" || turnmanager.mode == "Spawn Tile")) {
-			delayTileSpill += 1.0f;
-			float tileTime = 2.0f;
+			delayTileSpill += 0.4f;
+			float tileTime = 1.0f;
 
 			float midpointx = (pos.x + tile.transform.position.x) / 2.0f;
 			float midpointz = (pos.z + tile.transform.position.z) / 2.0f;
