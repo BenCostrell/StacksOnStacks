@@ -187,7 +187,7 @@ public class TurnManager : MonoBehaviour {
 			ps.Stop ();
 			ps.Clear();
 		}
-		boardManager.Spill ();
+		boardManager.Spill (boardManager.tilesQueuedToSpill);
 		mode = "Spawn Tile";
 		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
@@ -195,7 +195,7 @@ public class TurnManager : MonoBehaviour {
 
 	IEnumerator InitSideCollapse(){
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (2.5f);
 		boardManager.CheckForScore ();
 	}
 

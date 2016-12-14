@@ -210,11 +210,11 @@ public class BoardManager : MonoBehaviour {
 		return coords;
 	}
 
-	public void Spill(){
-		foreach (Tile tileToPlace in tilesQueuedToSpill){
-			tileToPlace.spaceQueuedToSpillOnto.provisionalTileCount = tileToPlace.spaceQueuedToSpillOnto.tileList.Count;
-			spaceQueuedToSpillFrom.tileList.Remove (tileToPlace);
-			tileToPlace.spaceQueuedToSpillOnto.AddTile (tileToPlace, false);
+	public void Spill(List<Tile> tilesToSpill){
+		foreach (Tile tile in tilesToSpill){
+			tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
+			spaceQueuedToSpillFrom.tileList.Remove (tile);
+			tile.spaceQueuedToSpillOnto.AddTile (tile, false);
 		}
 	}
 
@@ -242,11 +242,16 @@ public class BoardManager : MonoBehaviour {
 
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
-			Spill ();
+			StartCoroutine (CallSpill (tilesQueuedToSpill));
 			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
 		}
 
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
+	}
+		
+	IEnumerator CallSpill(List<Tile> tilesToSpill){
+		yield return new WaitForSeconds (2);
+		Spill (tilesToSpill);
 	}
 
 	List<BoardSpace> GetSpaceListFromSideNum(){
