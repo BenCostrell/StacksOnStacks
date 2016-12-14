@@ -54,35 +54,35 @@ public class JuicyManager : MonoBehaviour {
 			//print(tileCount);
 			iTween.MoveTo (tile.gameObject, iTween.Hash (
 				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
-				"time", 0.4f,
+				"time", 0.7f,
 				"delay", delayTileSpill
 			));
 			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0, 0),
-					"time", 0.4f,
+					"time", 0.7f,
 					"delay", delayTileSpill
 				));
 			} else if (xSpillDir == 0 && zSpillDir == -1) { //down
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (vrot, 0,0),
-					"time", 0.4f,
+					"time", 0.7f,
 					"delay", delayTileSpill
 				));
 			} else if (xSpillDir == -1 && zSpillDir == 0) { //left
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0, 0, vrot),
-					"time", 0.4f,
+					"time", 0.7f,
 					"delay", delayTileSpill
 				));
 			} else if (xSpillDir == 1 && zSpillDir == 0) { //right
 				float vrot = -180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
 					"amount", new Vector3 (0,0, vrot),
-					"time", 0.4f,
+					"time", 0.7f,
 					"delay", delayTileSpill
 				));
 
