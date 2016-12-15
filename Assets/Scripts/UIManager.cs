@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour {
 
@@ -51,5 +52,10 @@ public class UIManager : MonoBehaviour {
 		} else if (turnmanager.mode == "Finalize Spill") {
 			turnmanager.FinalizeSpill ();
 		}
+	}
+
+	public void RestartButtonClick(){
+		SceneManager.LoadScene ("main");
+
 	}
 }

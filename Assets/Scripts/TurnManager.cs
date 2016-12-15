@@ -29,6 +29,8 @@ public class TurnManager : MonoBehaviour {
 	public GameObject juicyManagerObj;
 	private JuicyManager juicyManager;
 
+	private bool collapseSideIndicated;
+
 	// Use this for initialization
 	void Start () {
 		boardManager = boardManagerObj.GetComponent<BoardManager> ();
@@ -56,6 +58,13 @@ public class TurnManager : MonoBehaviour {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				if (mode == "Select Tile") {
 					SelectTile (ray);
+					if (!collapseSideIndicated && firstTileFinalized) {
+						List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
+						foreach (BoardSpace bs in boardspaces) {
+							bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+						}
+						collapseSideIndicated = true;
+					}
 				} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
 					PlaceTile (ray);
 				} else if (mode == "Select Stack") {
@@ -65,6 +74,7 @@ public class TurnManager : MonoBehaviour {
 						InitQueueSpill (ray);
 					}
 				} else if (mode == "Finalize Spill") {
+					collapseSideIndicated = false;
 					//UndoQueueSpill ();
 				}
 			}
@@ -141,6 +151,7 @@ public class TurnManager : MonoBehaviour {
 			//spawnedTile.GetComponentInChildren<ParticleSystem> ().Play ();
 			ToggleGlow(spawnedTile, true);
 		}
+
 	}
 
 	void PlaceTile(Ray ray){
@@ -175,7 +186,13 @@ public class TurnManager : MonoBehaviour {
 			} else {
 				boardManager.sideAboutToCollapse = 3;
 			}
+
+			List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
+			foreach (BoardSpace bs in boardspaces) {
+				bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+			}
 		}
+
 	}
 
 	void DrawTileToPlace(){

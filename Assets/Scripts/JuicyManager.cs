@@ -32,6 +32,8 @@ public class JuicyManager : MonoBehaviour {
 
 	public AudioClip scoreSfx;
 
+	public bool boardSpaceEntered;
+
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
@@ -46,6 +48,8 @@ public class JuicyManager : MonoBehaviour {
 		centerPos = new List<Vector3> ();
 
 		waitForScoreAnimation = 2f;
+
+		boardSpaceEntered = false;
 
 
 	}
@@ -234,6 +238,8 @@ public class JuicyManager : MonoBehaviour {
 				boardspacetime += boardspacetimerate;
 			}
 		}
+
+		boardSpaceEntered = true;
 
 		float delaytiles = 0.2f;
 		float delaytilesrate = 0.1f;

@@ -68,6 +68,8 @@ public class BoardManager : MonoBehaviour {
 			InitialBoardSetup ();
 			boardInitialized = true;
 		}
+
+
 	}
 
 	void CreateBoard(){
@@ -258,7 +260,7 @@ public class BoardManager : MonoBehaviour {
 		Spill (tilesToSpill);
 	}
 
-	List<BoardSpace> GetSpaceListFromSideNum(){
+	public List<BoardSpace> GetSpaceListFromSideNum(){
 		List<BoardSpace> spaceList = new List<BoardSpace> ();
 		int indexToCollapse = 0;
 		if (sideAboutToCollapse == 0) {
@@ -296,23 +298,23 @@ public class BoardManager : MonoBehaviour {
 
 	public void CheckForScore(){
 		if (centerSpaceChanged) {
-			bool color0 = false;
-			bool color1 = false;
-			bool color2 = false;
-			bool color3 = false;
+			bool colorred = false;
+			bool colorblue = false;
+			bool coloryellow = false;
+			bool colorgreen = false;
 			foreach (BoardSpace space in centerSpaces) {
 				int color = space.color;
 				if (color == 3) {
-					color0 = true;
+					colorred = true;
 				} else if (color == 4) {
-					color1 = true;
+					colorblue = true;
 				} else if (color == 5) {
-					color2 = true;
+					coloryellow = true;
 				} else if (color == 6) {
-					color3 = true;
+					colorgreen = true;
 				}
 			}
-			if (color0 && color1 && color2 && color3) {
+			if (colorred && colorblue && coloryellow && colorgreen) {
 				score += 1;
 				//scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
 				scoring = true;

@@ -8,14 +8,26 @@ public class CameraController : MonoBehaviour {
 	private TurnManager turnManager;
 	public int currentPositionIndex;
 
+	JuicyManager juicymanager;
+
 	// Use this for initialization
 	void Start () {
 		turnManager = turnManagerObj.GetComponent<TurnManager> ();
 		currentPositionIndex = 0;
+
+		transform.parent.transform.position = new Vector3(10,0,0);
+
+		juicymanager = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (juicymanager.boardSpaceEntered) {
+
+			//transform.parent.transform.position = new Vector3(0,0,0);
+			iTween.MoveTo(transform.parent.gameObject,new Vector3(0,0,0),0.7f);
+			juicymanager.boardSpaceEntered = false;
+		}
 		if(Input.GetButtonDown("rotateClockwise")){
 			RotateBoard(1);
 		}
