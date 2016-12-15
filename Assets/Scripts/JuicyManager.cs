@@ -12,7 +12,7 @@ public class JuicyManager : MonoBehaviour {
 	public float xSpillDir;
 	public float zSpillDir;
 
-	bool finishedintro;
+	public bool finishedintro;
 	public bool scoring;
 
 	float boardSpaceBeginY = -15.0f;
