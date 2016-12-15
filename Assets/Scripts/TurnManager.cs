@@ -267,10 +267,11 @@ public class TurnManager : MonoBehaviour {
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
 		yield return new WaitForSeconds (2f);
+		//yield return new WaitForSeconds(juicyManager.delaySpaceCollapse);
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds(1);
 			mode = "Game Over";
 		} else {
 			mode = "Spawn Tile";

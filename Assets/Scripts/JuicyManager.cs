@@ -18,7 +18,7 @@ public class JuicyManager : MonoBehaviour {
 	float boardSpaceBeginY = -15.0f;
 	float tileBeginY = 15.0f;
 
-	float delaySpaceCollapse;
+	public float delaySpaceCollapse;
 	int spaceCount;
 
 	public float delayTileSpill;
