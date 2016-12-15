@@ -61,8 +61,14 @@ public class TurnManager : MonoBehaviour {
 					collapseSideIndicated = true;
 				}
 			}
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
+			if (Input.GetMouseButton (0)) {
+				if (mode == "Place Tile 0") {
+				}
+			}
+
 			if (Input.GetMouseButtonDown (0)) {
-				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				if (mode == "Select Tile") {
 					SelectTile (ray);
 				} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
@@ -75,14 +81,6 @@ public class TurnManager : MonoBehaviour {
 					}
 				} else if (mode == "Finalize Spill") {
 					collapseSideIndicated = false;
-					//UndoQueueSpill ();
-				}
-			}
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				if (mode == "Place Tile 1") {
-					FinalizeTilePlacement ();
-				} else if (mode == "Finalize Spill") {
-					FinalizeSpill ();
 				}
 			}
 		}
@@ -122,17 +120,10 @@ public class TurnManager : MonoBehaviour {
 	void ToggleGlow(List<Tile> tiles, bool on){
 		if (on) {
 			foreach (Tile tile in tiles) {
-				//tile.GetComponentInChildren<ParticleSystem> ().Play ();
-				//Behaviour halo = tile.GetComponent("Halo") as Behaviour;
-				//halo.enabled = true;
 				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
 			}
 		} else {
 			foreach (Tile tile in tiles) {
-				//tile.GetComponentInChildren<ParticleSystem> ().Stop ();
-				//tile.GetComponentInChildren<ParticleSystem> ().Clear ();
-				//Behaviour halo = tile.GetComponent("Halo") as Behaviour;
-				//halo.enabled = false;
 				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
 			}
 		}
@@ -148,7 +139,6 @@ public class TurnManager : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spawnedTileLayer)) {
 			mode = "Place Tile 0";
-			//spawnedTile.GetComponentInChildren<ParticleSystem> ().Play ();
 			ToggleGlow(spawnedTile, true);
 		}
 
@@ -270,7 +260,7 @@ public class TurnManager : MonoBehaviour {
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (1);
+			yield return new WaitForSeconds (3);
 			mode = "Game Over";
 		} else {
 			mode = "Spawn Tile";
