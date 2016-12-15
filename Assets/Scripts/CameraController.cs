@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour {
 	void RotateBoard(int rotationDirection){
 		currentPositionIndex = (currentPositionIndex + rotationDirection + 4)%4;
 		turnManager.rotationIndex = currentPositionIndex;
+		print (turnManager.rotationIndex);
 		Vector3 rotation = new Vector3 (0, currentPositionIndex * 90, 0);
 
 		iTween.RotateTo (transform.parent.gameObject, iTween.Hash ("rotation", rotation, "time", 0.8f,"easetype", "easeOutBack"));

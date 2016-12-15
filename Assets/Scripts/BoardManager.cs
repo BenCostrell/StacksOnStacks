@@ -110,7 +110,7 @@ public class BoardManager : MonoBehaviour {
 		Vector3 offscreen = new Vector3(-1000, -1000, -1000);
 		tile = Instantiate(tilePrefab, offscreen, Quaternion.identity) as GameObject;
 		tile.GetComponent<MeshRenderer>().material = mats[materialIndex];
-		tile.GetComponent<Tile> ().color = materialIndex - 3;
+		tile.GetComponent<Tile> ().color = materialIndex;
 		tileBag.Add(tile.GetComponent<Tile>());
 	}
 
@@ -301,13 +301,13 @@ public class BoardManager : MonoBehaviour {
 			bool color3 = false;
 			foreach (BoardSpace space in centerSpaces) {
 				int color = space.color;
-				if (color == 0) {
+				if (color == 3) {
 					color0 = true;
-				} else if (color == 1) {
+				} else if (color == 4) {
 					color1 = true;
-				} else if (color == 2) {
+				} else if (color == 5) {
 					color2 = true;
-				} else if (color == 3) {
+				} else if (color == 6) {
 					color3 = true;
 				}
 			}

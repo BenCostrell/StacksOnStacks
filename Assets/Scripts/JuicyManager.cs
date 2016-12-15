@@ -25,6 +25,13 @@ public class JuicyManager : MonoBehaviour {
 
 	List<float> stackHeights;
 
+	List<Vector3> centerPos;
+
+	public float waitForScoreAnimation;
+	public float scorePitch;
+
+	public AudioClip scoreSfx;
+
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
@@ -35,6 +42,22 @@ public class JuicyManager : MonoBehaviour {
 		delaySpaceCollapse = 0f;
 		spaceCount = 0;
 		finishedintro = false;
+
+		centerPos = new List<Vector3> ();
+
+		waitForScoreAnimation = 2f;
+
+
+	}
+
+	void LateUpdate(){
+		if (finishedintro && boardmanager.boardInitialized) {
+			int count = 0;
+			foreach (BoardSpace space in boardmanager.centerSpaces) {
+				space.transform.position = new Vector3 (centerPos [count].x, space.transform.position.y, centerPos [count].z);
+				count++;
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -42,16 +65,35 @@ public class JuicyManager : MonoBehaviour {
 		if (!finishedintro && boardmanager.boardInitialized) {
 			introAnimation ();
 			finishedintro = true;
+
+			foreach (BoardSpace space in boardmanager.centerSpaces) {
+				space.gameObject.GetComponent<Animator> ().enabled = true;
+				centerPos.Add (space.transform.position);
+			}
 		}
 		
 	}
 
 	public void ScoreAnimation(){
-		float delay = 0;
+		scorePitch = 1f;
+		StartCoroutine (scoreAnimTiming ());
+		//float delay = 0;
+		/*foreach (BoardSpace space in boardmanager.centerSpaces) {
+			//iTween.PunchScale (space.gameObject, iTween.Hash ("amount", Vector3.forward,"time", 2, "delay", delay));
+		//	delay += 0.5f;
+			space.gameObject.GetComponent<Animator> ().SetTrigger ("getScore");
+		}*/
+	}
+
+	IEnumerator scoreAnimTiming(){
 		foreach (BoardSpace space in boardmanager.centerSpaces) {
-			iTween.PunchScale (space.gameObject, iTween.Hash ("amount", Vector3.forward,"time", 2, "delay", delay));
-			delay += 0.5f;
+			space.gameObject.GetComponent<Animator> ().SetTrigger ("getScore");
+			scorePitch += 0.3f;
+			yield return new WaitForSeconds (0.3f);
 		}
+		GetComponent<AudioSource> ().clip = scoreSfx;
+		GetComponent<AudioSource> ().Play ();
+
 	}
 
 	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){

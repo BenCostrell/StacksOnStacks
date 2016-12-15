@@ -26,6 +26,8 @@ public class TurnManager : MonoBehaviour {
 	private int numSidesCollapsed;
 	public bool anythingTweening;
 
+	public GameObject juicyManagerObj;
+	private JuicyManager juicyManager;
 
 	// Use this for initialization
 	void Start () {
@@ -36,6 +38,8 @@ public class TurnManager : MonoBehaviour {
 		numSidesCollapsed = 0;
 		GameOverUI.SetActive (false);
 		anythingTweening = false;
+
+		juicyManager = juicyManagerObj.GetComponent<JuicyManager> ();
 	}
 	
 	// Update is called once per frame
@@ -232,7 +236,8 @@ public class TurnManager : MonoBehaviour {
 	IEnumerator InitSideCollapse(){
 		float wait;
 		if (boardManager.scoring) {
-			wait = 2.5f;
+			//wait = 2.5f;
+			wait = juicyManager.waitForScoreAnimation;
 			boardManager.scoring = false;
 		} else {
 			wait = 0.5f;
