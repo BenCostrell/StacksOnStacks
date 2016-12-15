@@ -24,7 +24,8 @@ public class BoardManager : MonoBehaviour {
 	public int score;
 	public bool scoring;
 	public bool centerSpaceChanged;
-	public GameObject scoreUI;
+	//public GameObject scoreUI;
+	public GameObject scorePrefab;
 	JuicyManager juicy;
 	public bool boardInitialized;
 	public int sideAboutToCollapse;
@@ -313,9 +314,13 @@ public class BoardManager : MonoBehaviour {
 			}
 			if (color0 && color1 && color2 && color3) {
 				score += 1;
-				scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
+				//scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
 				scoring = true;
 				juicy.ScoreAnimation ();
+				GameObject pre = Instantiate (scorePrefab,
+					new Vector3(scorePrefab.transform.position.x+60f*(score-1),scorePrefab.transform.position.y, scorePrefab.transform.position.z),
+					Quaternion.identity) as GameObject;
+				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);
 			}
 			centerSpaceChanged = false;
 		}

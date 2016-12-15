@@ -302,6 +302,7 @@ GameObject:
   - 4: {fileID: 223118582}
   - 114: {fileID: 223118581}
   - 82: {fileID: 223118583}
+  - 114: {fileID: 223118584}
   m_Layer: 0
   m_Name: JuicyManager
   m_TagString: JuicyManager
@@ -414,6 +415,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &223118584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 223118580}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f5863a173a3743e0a0919ca7f01e9a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 1000010027996624, guid: 7a8d2dfc2f7024dd2886970ec587fc96, type: 2}
 --- !u!1 &303297322
 GameObject:
   m_ObjectHideFlags: 0
@@ -556,7 +569,8 @@ MonoBehaviour:
   score: 0
   scoring: 0
   centerSpaceChanged: 0
-  scoreUI: {fileID: 1555608749}
+  scorePrefab: {fileID: 1000010027996624, guid: 7a8d2dfc2f7024dd2886970ec587fc96,
+    type: 2}
   boardInitialized: 0
   sideAboutToCollapse: 0
   mats:
@@ -760,7 +774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1555608750
 RectTransform:
   m_ObjectHideFlags: 0
