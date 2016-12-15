@@ -101,6 +101,8 @@ public class TurnManager : MonoBehaviour {
 					Destroy (spillUI);
 					spillUI = Instantiate(spillUIPrefab,
 						new Vector3 (topTileLocation.x, topTileLocation.y, topTileLocation.z), Quaternion.identity) as GameObject;
+					spillUI.transform.eulerAngles = new Vector3 (0, rotationIndex * 90, 0);
+					spillUI.transform.GetChild (0).transform.localEulerAngles = new Vector3 (0,-rotationIndex * 90,0);
 				}
 			}
 		}
@@ -217,6 +219,8 @@ public class TurnManager : MonoBehaviour {
 			tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
 		}
 		boardManager.spaceQueuedToSpillFrom.provisionalTileCount = boardManager.spaceQueuedToSpillFrom.tileList.Count;
+		spillUI.transform.eulerAngles = new Vector3 (0, rotationIndex * 90, 0);
+		spillUI.transform.GetChild (0).transform.localEulerAngles = new Vector3 (0,-rotationIndex * 90,0);
 		mode = "Queue Spill";
 	}
 
