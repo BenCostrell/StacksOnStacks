@@ -203,6 +203,7 @@ public class TurnManager : MonoBehaviour {
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
 		spawnedTile = tileToPlace;
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;
+		juicyManager.spawnTileAnimation (spawnedTile.gameObject);
 	}
 
 	void InitQueueSpill(Ray ray){

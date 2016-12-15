@@ -34,6 +34,9 @@ public class JuicyManager : MonoBehaviour {
 
 	public bool boardSpaceEntered;
 
+	bool spawnTileEntry;
+
+
 	// Use this for initialization
 	void Start () {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
@@ -50,6 +53,7 @@ public class JuicyManager : MonoBehaviour {
 		waitForScoreAnimation = 2f;
 
 		boardSpaceEntered = false;
+		spawnTileEntry = true;
 
 
 	}
@@ -60,6 +64,15 @@ public class JuicyManager : MonoBehaviour {
 			foreach (BoardSpace space in boardmanager.centerSpaces) {
 				space.transform.position = new Vector3 (centerPos [count].x, space.transform.position.y, centerPos [count].z);
 				count++;
+			}
+		}
+
+		if (!spawnTileEntry) {
+			if (turnmanager.mode == "Select Tile") {
+				turnmanager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = true;
+			} else {
+				turnmanager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = false;
+				spawnTileEntry = true;
 			}
 		}
 	}
@@ -78,15 +91,34 @@ public class JuicyManager : MonoBehaviour {
 		
 	}
 
+	public void spawnTileAnimation(GameObject tile){
+		iTween.MoveFrom (tile, iTween.Hash(
+			"position",new Vector3(-9,0,0),
+			"islocal", true,
+			"time", 1.0f,
+			"easetype","easeOutElastic",
+			"oncomplete","toggleSpawnTileAnim",
+			"oncompletetarget",transform.gameObject,
+			"oncompleteparams",tile
+		));
+
+	}
+
+	void toggleSpawnTileAnim(GameObject tile){
+
+		if (turnmanager.mode == "Select Tile") {
+			tile.GetComponent<Animator> ().enabled = true;
+		} else {
+			tile.GetComponent<Animator> ().enabled = false;
+		}
+
+
+		spawnTileEntry = false;
+	}
+
 	public void ScoreAnimation(){
 		scorePitch = 1f;
 		StartCoroutine (scoreAnimTiming ());
-		//float delay = 0;
-		/*foreach (BoardSpace space in boardmanager.centerSpaces) {
-			//iTween.PunchScale (space.gameObject, iTween.Hash ("amount", Vector3.forward,"time", 2, "delay", delay));
-		//	delay += 0.5f;
-			space.gameObject.GetComponent<Animator> ().SetTrigger ("getScore");
-		}*/
 	}
 
 	IEnumerator scoreAnimTiming(){
