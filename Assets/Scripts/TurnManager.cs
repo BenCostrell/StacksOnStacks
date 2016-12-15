@@ -85,11 +85,11 @@ public class TurnManager : MonoBehaviour {
 					stackSelected = true;
 					if (selectedSpace != null) {
 						if (selectedSpace != space) {
-							ToggleStackParticles (selectedSpace, false);
-							ToggleStackParticles (space, true);
+							ToggleGlow (selectedSpace.tileList, false);
+							ToggleGlow (space.tileList, true);
 						}
 					} else {
-						ToggleStackParticles (space, true);
+						ToggleGlow (space.tileList, true);
 					}
 					selectedSpace = space;
 					mode = "Queue Spill";
@@ -103,24 +103,37 @@ public class TurnManager : MonoBehaviour {
 		return stackSelected;
 	}
 
-	void ToggleStackParticles(BoardSpace space, bool on){
+	void ToggleGlow(List<Tile> tiles, bool on){
 		if (on) {
-			foreach (Tile tile in space.tileList) {
-				tile.GetComponentInChildren<ParticleSystem> ().Play ();
+			foreach (Tile tile in tiles) {
+				//tile.GetComponentInChildren<ParticleSystem> ().Play ();
+				//Behaviour halo = tile.GetComponent("Halo") as Behaviour;
+				//halo.enabled = true;
+				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
 			}
 		} else {
-			foreach (Tile tile in selectedSpace.tileList) {
-				tile.GetComponentInChildren<ParticleSystem> ().Stop ();
-				tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+			foreach (Tile tile in tiles) {
+				//tile.GetComponentInChildren<ParticleSystem> ().Stop ();
+				//tile.GetComponentInChildren<ParticleSystem> ().Clear ();
+				//Behaviour halo = tile.GetComponent("Halo") as Behaviour;
+				//halo.enabled = false;
+				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
 			}
 		}
+	}
+
+	void ToggleGlow(Tile tile, bool on){
+		List<Tile> tiles = new List<Tile> ();
+		tiles.Add (tile);
+		ToggleGlow(tiles, on);
 	}
 
 	void SelectTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spawnedTileLayer)) {
 			mode = "Place Tile 0";
-			spawnedTile.GetComponentInChildren<ParticleSystem> ().Play ();
+			//spawnedTile.GetComponentInChildren<ParticleSystem> ().Play ();
+			ToggleGlow(spawnedTile, true);
 		}
 	}
 
@@ -140,8 +153,9 @@ public class TurnManager : MonoBehaviour {
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
-		spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
-		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();
+		/*spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
+		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();*/
+		ToggleGlow (spawnedTile, false);
 		mode = "Select Stack";
 		boardManager.CheckForScore ();
 		if (!firstTileFinalized) {
@@ -186,7 +200,7 @@ public class TurnManager : MonoBehaviour {
 			mode = "Finalize Spill";
 		} else {
 			mode = "Select Stack";
-			ToggleStackParticles (selectedSpace, false);
+			ToggleGlow (selectedSpace.tileList, false);
 			selectedSpace = null;
 		}
 		spillUI.SetActive (false);
@@ -203,11 +217,12 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinalizeSpill(){
-		foreach (Tile tile in boardManager.tilesQueuedToSpill) {
+		/*foreach (Tile tile in boardManager.tilesQueuedToSpill) {
 			ParticleSystem ps = tile.GetComponentInChildren<ParticleSystem> ();
 			ps.Stop ();
 			ps.Clear();
-		}
+		}*/
+		ToggleGlow (boardManager.tilesQueuedToSpill, false);
 		mode = "Interim";
 		boardManager.Spill (boardManager.tilesQueuedToSpill);
 		boardManager.CheckForScore ();

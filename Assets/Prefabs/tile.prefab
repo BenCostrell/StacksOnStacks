@@ -41,6 +41,7 @@ GameObject:
   - 23: {fileID: 23000012461747386}
   - 114: {fileID: 114000010861111216}
   - 82: {fileID: 82000010825490328}
+  - 122: {fileID: 122000013541211398}
   m_Layer: 0
   m_Name: tile
   m_TagString: Tile
@@ -68,7 +69,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000013720469746}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.72, y: 0, z: 1.22}
   m_LocalScale: {x: 0.8, y: 0.16, z: 0.8}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -210,6 +211,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spaceQueuedToSpillOnto: {fileID: 0}
   color: 0
+--- !u!122 &122000013541211398
+Halo:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013720469746}
+  m_Enabled: 0
+  m_Color:
+    serializedVersion: 2
+    rgba: 4283564029
+  m_Size: 0.61
 --- !u!198 &198000010151002586
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -260,7 +272,7 @@ ParticleSystem:
   moveWithTransform: 1
   autoRandomSeed: 1
   scalingMode: 1
-  randomSeed: 571123640
+  randomSeed: 611178664
   InitialModule:
     serializedVersion: 2
     enabled: 1
