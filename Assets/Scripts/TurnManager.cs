@@ -170,7 +170,7 @@ public class TurnManager : MonoBehaviour {
 		} else {
 			tileInPosition = false;
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, invisibleBoardPlaneLayer)){
-				spawnedTile.transform.position = hit.point + (0.08f * Vector3.up);
+				spawnedTile.transform.position = hit.point;
 			}
 		}
 	}
