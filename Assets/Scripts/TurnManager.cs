@@ -16,6 +16,7 @@ public class TurnManager : MonoBehaviour {
 	public LayerMask spawnedTileLayer;
 	public LayerMask topTilesAndSpillUI;
 	public LayerMask spillUILayer;
+	public LayerMask invisibleBoardPlaneLayer;
 	public string mode;
 	public GameObject mainCamera;
 	public GameObject pivotPoint;
@@ -25,6 +26,7 @@ public class TurnManager : MonoBehaviour {
 	private bool firstTileFinalized;
 	private int numSidesCollapsed;
 	public bool anythingTweening;
+	private bool tileInPosition;
 
 	public GameObject juicyManagerObj;
 	private JuicyManager juicyManager;
@@ -40,6 +42,7 @@ public class TurnManager : MonoBehaviour {
 		numSidesCollapsed = 0;
 		GameOverUI.SetActive (false);
 		anythingTweening = false;
+		tileInPosition = false;
 
 		juicyManager = juicyManagerObj.GetComponent<JuicyManager> ();
 	}
@@ -64,15 +67,26 @@ public class TurnManager : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
 			if (Input.GetMouseButton (0)) {
-				if (mode == "Place Tile 0") {
+				if (mode == "Place Tile") {
+					PlaceTile (ray);
+				}
+			}
+			if (Input.GetMouseButtonUp (0)) {
+				if (mode == "Place Tile") {
+					if (tileInPosition) {
+						FinalizeTilePlacement ();
+						tileInPosition = false;
+					} else {
+						SetupSpawnedTile (spawnedTile);
+						mode = "Select Tile";
+						ToggleGlow (spawnedTile, false);
+					}
 				}
 			}
 
 			if (Input.GetMouseButtonDown (0)) {
 				if (mode == "Select Tile") {
 					SelectTile (ray);
-				} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
-					PlaceTile (ray);
 				} else if (mode == "Select Stack") {
 					SelectStack (ray);
 				} else if (mode == "Queue Spill") {
@@ -138,7 +152,7 @@ public class TurnManager : MonoBehaviour {
 	void SelectTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spawnedTileLayer)) {
-			mode = "Place Tile 0";
+			mode = "Place Tile";
 			ToggleGlow(spawnedTile, true);
 		}
 
@@ -148,10 +162,15 @@ public class TurnManager : MonoBehaviour {
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, topTiles)) {
 			if (!CalculateSpaceFromLocation (hit.collider.transform.position).isCenterTile) {
-				mode = "Place Tile 1";
 				Vector3 pointOnBoard = hit.transform.position;
 				spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
 				spawnedTile.transform.parent = null;
+				tileInPosition = true;
+			}
+		} else {
+			tileInPosition = false;
+			if (Physics.Raycast(ray, out hit, Mathf.Infinity, invisibleBoardPlaneLayer)){
+				spawnedTile.transform.position = hit.point + (0.08f * Vector3.up);
 			}
 		}
 	}
@@ -160,8 +179,6 @@ public class TurnManager : MonoBehaviour {
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
-		/*spawnedTile.GetComponentInChildren<ParticleSystem> ().Stop ();
-		spawnedTile.GetComponentInChildren<ParticleSystem> ().Clear ();*/
 		ToggleGlow (spawnedTile, false);
 		mode = "Select Stack";
 		boardManager.CheckForScore ();
@@ -188,12 +205,16 @@ public class TurnManager : MonoBehaviour {
 	void DrawTileToPlace(){
 		Tile tileToPlace;
 		tileToPlace = boardManager.DrawTile ();
+		SetupSpawnedTile (tileToPlace);
+		spawnedTile = tileToPlace;
+		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;
+	}
+
+	void SetupSpawnedTile(Tile tileToPlace){
 		tileToPlace.transform.SetParent (pivotPoint.transform);
 		tileToPlace.transform.localPosition = new Vector3 (-5, 0, 0);
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
-		spawnedTile = tileToPlace;
-		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 2;
-		juicyManager.spawnTileAnimation (spawnedTile.gameObject);
+		juicyManager.spawnTileAnimation (tileToPlace.gameObject);
 	}
 
 	void InitQueueSpill(Ray ray){
