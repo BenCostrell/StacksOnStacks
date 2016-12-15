@@ -180,7 +180,6 @@ public class TurnManager : MonoBehaviour {
 		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
 		ToggleGlow (spawnedTile, false);
-		mode = "Select Stack";
 		boardManager.CheckForScore ();
 		if (!firstTileFinalized) {
 			firstTileFinalized = true;
@@ -200,6 +199,24 @@ public class TurnManager : MonoBehaviour {
 			}
 		}
 
+		StartCoroutine (InitSelectStackMode ());
+
+	}
+
+	IEnumerator InitSelectStackMode(){
+		yield return new WaitForSeconds (0.5f);
+		List<Tile> tilesToFlash = new List<Tile> ();
+		foreach (BoardSpace space in boardManager.board) {
+			if (space != null) {
+				if (space.tileList.Count > 1) {
+					tilesToFlash.AddRange (space.tileList);
+				}
+			}
+		}
+		ToggleGlow (tilesToFlash, true);
+		yield return new WaitForSeconds (0.2f);
+		ToggleGlow (tilesToFlash, false);
+		mode = "Select Stack";
 	}
 
 	void DrawTileToPlace(){
@@ -254,11 +271,6 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinalizeSpill(){
-		/*foreach (Tile tile in boardManager.tilesQueuedToSpill) {
-			ParticleSystem ps = tile.GetComponentInChildren<ParticleSystem> ();
-			ps.Stop ();
-			ps.Clear();
-		}*/
 		ToggleGlow (boardManager.tilesQueuedToSpill, false);
 		mode = "Interim";
 		boardManager.Spill (boardManager.tilesQueuedToSpill);
@@ -277,7 +289,7 @@ public class TurnManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (boardManager.totalSpillTime - wait);
+		yield return new WaitForSeconds (2f);
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {

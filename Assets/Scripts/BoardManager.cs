@@ -265,7 +265,7 @@ public class BoardManager : MonoBehaviour {
 	}
 		
 	IEnumerator CallSpill(List<Tile> tilesToSpill){
-		yield return new WaitForSeconds (totalSpillTime);
+		yield return new WaitForSeconds (2);
 		Spill (tilesToSpill);
 	}
 
