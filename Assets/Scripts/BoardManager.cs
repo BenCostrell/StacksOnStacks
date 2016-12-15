@@ -30,6 +30,8 @@ public class BoardManager : MonoBehaviour {
 	public bool boardInitialized;
 	public int sideAboutToCollapse;
 
+	public float totalSpillTime;
+
 	public Material[] mats;
 	/*
 	 * index:	1) board1
@@ -177,6 +179,9 @@ public class BoardManager : MonoBehaviour {
 		int boardSpaceZ = spaceToSpill.rowNum;
 		tilesQueuedToSpill = new List<Tile> ();
 		int numTilesToMove = spaceToSpill.tileList.Count;
+
+		totalSpillTime = totalSpillTime + numTilesToMove * 0.4f;
+
 		juicy.delayTileSpill = 0f;
 		juicy.xSpillDir = xDirection; 
 		juicy.zSpillDir = zDirection;
@@ -250,13 +255,17 @@ public class BoardManager : MonoBehaviour {
 			QueueSpill (space, xDirection, zDirection);
 			StartCoroutine (CallSpill (tilesQueuedToSpill));
 			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
+
 		}
 
+
+
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
+
 	}
 		
 	IEnumerator CallSpill(List<Tile> tilesToSpill){
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (totalSpillTime);
 		Spill (tilesToSpill);
 	}
 

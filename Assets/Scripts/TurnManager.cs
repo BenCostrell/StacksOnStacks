@@ -277,16 +277,16 @@ public class TurnManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (2f);
-		//yield return new WaitForSeconds(juicyManager.delaySpaceCollapse);
+		yield return new WaitForSeconds (boardManager.totalSpillTime - wait);
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (3);
+			yield return new WaitForSeconds (boardManager.totalSpillTime);
 			mode = "Game Over";
 		} else {
 			mode = "Spawn Tile";
 		}
+		boardManager.totalSpillTime = 0f;
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){
