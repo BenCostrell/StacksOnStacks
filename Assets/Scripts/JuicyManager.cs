@@ -19,7 +19,7 @@ public class JuicyManager : MonoBehaviour {
 	float tileBeginY = 15.0f;
 
 	public float delaySpaceCollapse;
-	int spaceCount;
+	public int spaceCount;
 
 	public float delayTileSpill;
 
@@ -236,6 +236,7 @@ public class JuicyManager : MonoBehaviour {
 		));
 		delaySpaceCollapse += 0.2f;
 		spaceCount++;
+		//print (spaceCount + ", " + delaySpaceCollapse + ","+ numOfSpaces);
 		if (spaceCount == numOfSpaces) {
 			delaySpaceCollapse = 0f;
 			spaceCount = 0;
