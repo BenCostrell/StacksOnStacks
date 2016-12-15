@@ -54,14 +54,16 @@ public class TurnManager : MonoBehaviour {
 			GameOverUI.SetActive (true);
 		} else if (!anythingTweening) { 
 			if (mode == "Spawn Tile") {
-				DrawTileToPlace ();
-				mode = "Select Tile";
-				if (!collapseSideIndicated && firstTileFinalized) {
-					List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
-					foreach (BoardSpace bs in boardspaces) {
-						bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+				if (juicyManager.finishedintro) {
+					DrawTileToPlace ();
+					mode = "Select Tile";
+					if (!collapseSideIndicated && firstTileFinalized) {
+						List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
+						foreach (BoardSpace bs in boardspaces) {
+							bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+						}
+						collapseSideIndicated = true;
 					}
-					collapseSideIndicated = true;
 				}
 			}
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
