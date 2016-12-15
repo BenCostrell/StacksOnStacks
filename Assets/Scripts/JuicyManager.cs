@@ -128,7 +128,7 @@ public class JuicyManager : MonoBehaviour {
 			yield return new WaitForSeconds (0.3f);
 		}
 		GetComponent<AudioSource> ().clip = scoreSfx;
-		GetComponent<AudioSource> ().Play ();
+		GetComponent<AudioSource> ().PlayOneShot (scoreSfx, 1f);
 
 	}
 
