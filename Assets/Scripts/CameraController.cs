@@ -36,7 +36,7 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
-	void RotateBoard(int rotationDirection){
+	public void RotateBoard(int rotationDirection){
 		currentPositionIndex = (currentPositionIndex + rotationDirection + 4)%4;
 		turnManager.rotationIndex = currentPositionIndex;
 		Vector3 rotation = new Vector3 (0, currentPositionIndex * 90, 0);

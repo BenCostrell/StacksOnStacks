@@ -53,18 +53,18 @@ public class TurnManager : MonoBehaviour {
 			if (mode == "Spawn Tile") {
 				DrawTileToPlace ();
 				mode = "Select Tile";
+				if (!collapseSideIndicated && firstTileFinalized) {
+					List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
+					foreach (BoardSpace bs in boardspaces) {
+						bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+					}
+					collapseSideIndicated = true;
+				}
 			}
 			if (Input.GetMouseButtonDown (0)) {
 				Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 				if (mode == "Select Tile") {
 					SelectTile (ray);
-					if (!collapseSideIndicated && firstTileFinalized) {
-						List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
-						foreach (BoardSpace bs in boardspaces) {
-							bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
-						}
-						collapseSideIndicated = true;
-					}
 				} else if (mode == "Place Tile 0" || mode == "Place Tile 1") {
 					PlaceTile (ray);
 				} else if (mode == "Select Stack") {
