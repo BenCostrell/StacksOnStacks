@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.UI;
 
 public class BoardManager : MonoBehaviour {
@@ -29,6 +30,7 @@ public class BoardManager : MonoBehaviour {
 	JuicyManager juicy;
 	public bool boardInitialized;
 	public int sideAboutToCollapse;
+	public List<BoardSpace> collapsingSpaces;
 
 	public float totalSpillTime;
 
@@ -185,6 +187,7 @@ public class BoardManager : MonoBehaviour {
 		juicy.delayTileSpill = 0f;
 		juicy.xSpillDir = xDirection; 
 		juicy.zSpillDir = zDirection;
+		juicy.tweensLeftToFinish += numTilesToMove;
 		spaceToSpill.provisionalTileCount = 0;
 		spaceQueuedToSpillFrom = spaceToSpill; 
 		juicy.PositionStackToSpill (spaceToSpill);
@@ -220,18 +223,22 @@ public class BoardManager : MonoBehaviour {
 		return coords;
 	}
 
-	public void Spill(List<Tile> tilesToSpill){
-		foreach (Tile tile in tilesToSpill) {
-			spaceQueuedToSpillFrom.tileList.Remove (tile);
-		}
-		foreach (Tile tile in tilesToSpill){
-			tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
-			tile.spaceQueuedToSpillOnto.AddTile (tile, false);
+	public void Spill(BoardSpace spaceToSpill){
+		List<Tile> tilesToSpill = spaceToSpill.tileList.ToList();
+		if (tilesToSpill.Count > 0) {
+			foreach (Tile tile in tilesToSpill) {
+				spaceToSpill.tileList.Remove (tile);
+			}
+			foreach (Tile tile in tilesToSpill) {
+				tile.spaceQueuedToSpillOnto.provisionalTileCount = tile.spaceQueuedToSpillOnto.tileList.Count;
+				tile.spaceQueuedToSpillOnto.AddTile (tile, false);
+			}
 		}
 	}
 
 	public void CollapseSide(){
 		List<BoardSpace> spacesToCollapse = GetSpaceListFromSideNum ();
+		collapsingSpaces = spacesToCollapse;
 		int[] coords = GetDirectionFromSideNum ();
 		int xDirection = coords[0];
 		int zDirection = coords[1]; 
@@ -251,23 +258,14 @@ public class BoardManager : MonoBehaviour {
 				currentHighestRowIndex -= 1;
 			}
 		}
-
+			
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
-			StartCoroutine (CallSpill (tilesQueuedToSpill));
 			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
-
 		}
-
-
 
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
 
-	}
-		
-	IEnumerator CallSpill(List<Tile> tilesToSpill){
-		yield return new WaitForSeconds (2);
-		Spill (tilesToSpill);
 	}
 
 	public List<BoardSpace> GetSpaceListFromSideNum(){

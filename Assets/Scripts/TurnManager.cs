@@ -54,6 +54,26 @@ public class TurnManager : MonoBehaviour {
 		if (!gameIsOver) {
 			IsAnythingTweening ();
 		}
+		if (mode == "Collapsing") {
+			if (juicyManager.tweensLeftToFinish == 0) {
+				foreach (BoardSpace space in boardManager.collapsingSpaces) {
+					boardManager.Spill (space);
+				}
+				boardManager.CheckForScore ();
+				mode = "Scoring";
+			}
+		}
+		if (mode == "Scoring") {
+			if (!anythingTweening) {
+				numSidesCollapsed += 1;
+				if (numSidesCollapsed == 8) {
+					mode = "Game Over";
+				} else {
+					mode = "Spawn Tile";
+				}
+			}
+		}
+
 		if (mode == "Game Over") {
 			if (!gameIsOver) {
 				GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ().PauseButtonClick ();
@@ -312,9 +332,9 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinalizeSpill(){
-		ToggleGlow (boardManager.tilesQueuedToSpill, false);
+		ToggleGlow (boardManager.spaceQueuedToSpillFrom.tileList, false);
 		mode = "Interim";
-		boardManager.Spill (boardManager.tilesQueuedToSpill);
+		boardManager.Spill (boardManager.spaceQueuedToSpillFrom);
 		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
 	}
@@ -322,7 +342,6 @@ public class TurnManager : MonoBehaviour {
 	IEnumerator InitSideCollapse(){
 		float wait;
 		if (boardManager.scoring) {
-			//wait = 2.5f;
 			wait = juicyManager.waitForScoreAnimation;
 			boardManager.scoring = false;
 		} else {
@@ -330,16 +349,7 @@ public class TurnManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (2f);
-		boardManager.CheckForScore ();
-		numSidesCollapsed += 1;
-		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (boardManager.totalSpillTime - 2f);
-			mode = "Game Over";
-		} else {
-			mode = "Spawn Tile";
-		}
-		boardManager.totalSpillTime = 0f;
+		mode = "Collapsing";
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){
