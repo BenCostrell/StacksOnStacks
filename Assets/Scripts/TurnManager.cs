@@ -119,13 +119,14 @@ public class TurnManager : MonoBehaviour {
 			}
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
-			if (Input.GetMouseButton (0)) {
-				if (mode == "Place Tile") {
-					PlaceTile (ray);
-				}
+			if (mode == "Place Tile") {
+				PlaceTile (ray);
 			}
-			if (Input.GetMouseButtonUp (0)) {
-				if (mode == "Place Tile") {
+
+			if (Input.GetMouseButtonDown (0)) {
+				if (mode == "Select Tile") {
+					SelectTile (ray);
+				} else if (mode == "Place Tile") {
 					if (tileInPosition) {
 						FinalizeTilePlacement ();
 						tileInPosition = false;
@@ -134,12 +135,6 @@ public class TurnManager : MonoBehaviour {
 						mode = "Select Tile";
 						ToggleGlow (spawnedTile, false);
 					}
-				}
-			}
-
-			if (Input.GetMouseButtonDown (0)) {
-				if (mode == "Select Tile") {
-					SelectTile (ray);
 				} else if (mode == "Select Stack") {
 					SelectStack (ray);
 				} else if (mode == "Queue Spill") {
