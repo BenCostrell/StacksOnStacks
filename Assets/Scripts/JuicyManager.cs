@@ -31,6 +31,7 @@ public class JuicyManager : MonoBehaviour {
 	public float scorePitch;
 
 	public AudioClip scoreSfx;
+	public AudioClip tilePlaceSfx;
 
 	public bool boardSpaceEntered;
 
@@ -100,6 +101,11 @@ public class JuicyManager : MonoBehaviour {
 			"oncomplete","toggleSpawnTileAnim",
 			"oncompletetarget",transform.gameObject,
 			"oncompleteparams",tile
+		));
+		iTween.RotateTo (tile, iTween.Hash (
+			"rotation", new Vector3 (0, 0, 0),
+			"islocal", true,
+			"time", 1.0f
 		));
 
 	}

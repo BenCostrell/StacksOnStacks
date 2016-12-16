@@ -328,7 +328,13 @@ public class BoardManager : MonoBehaviour {
 				//scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
 				scoring = true;
 				juicy.ScoreAnimation ();
-				int prescore; //adjusting x coordinate
+
+				GameObject pre = Instantiate (scorePrefab,
+					                 new Vector3 (scorePrefab.transform.position.x + 45f * (score - 1), scorePrefab.transform.position.y, scorePrefab.transform.position.z),
+					                 Quaternion.identity) as GameObject;
+				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);
+
+				/*int prescore; //adjusting x coordinate
 				int prescore2; //adjusting y coordinate
 				if (score % 2 == 0) { // every even score (2, 4, 6, etc.) - x should be static, y should be static
 					prescore = 1;
@@ -340,7 +346,7 @@ public class BoardManager : MonoBehaviour {
 				GameObject pre = Instantiate (scorePrefab,
 					new Vector3(scorePrefab.transform.position.x+60f*(prescore),scorePrefab.transform.position.y-30f*(prescore2-1), scorePrefab.transform.position.z),
 					Quaternion.identity) as GameObject;
-				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);
+				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);*/
 			}
 			centerSpaceChanged = false;
 		}

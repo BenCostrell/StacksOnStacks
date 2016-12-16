@@ -203,6 +203,8 @@ public class TurnManager : MonoBehaviour {
 
 		StartCoroutine (InitSelectStackMode ());
 
+		spawnedTile.GetComponent<AudioSource> ().Play ();
+
 	}
 
 	IEnumerator InitSelectStackMode(){
