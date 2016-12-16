@@ -180,7 +180,7 @@ public class BoardManager : MonoBehaviour {
 		tilesQueuedToSpill = new List<Tile> ();
 		int numTilesToMove = spaceToSpill.tileList.Count;
 
-		totalSpillTime = totalSpillTime + numTilesToMove * 0.4f;
+		totalSpillTime = Mathf.Max(totalSpillTime, numTilesToMove * 0.4f);
 
 		juicy.delayTileSpill = 0f;
 		juicy.xSpillDir = xDirection; 
@@ -252,13 +252,17 @@ public class BoardManager : MonoBehaviour {
 			}
 		}
 
+		List<List<Tile>> spillQueueList = new List<List<Tile>> ();
+
 		foreach (BoardSpace space in spacesToCollapse) {
 			QueueSpill (space, xDirection, zDirection);
-			StartCoroutine (CallSpill (tilesQueuedToSpill));
+			spillQueueList.Add (tilesQueuedToSpill);
 			juicy.CollapseSideSpaces (space.gameObject, spacesToCollapse.Count); 
 
 		}
-
+		for(int i = 0; i < spacesToCollapse.Count; i++) {
+			StartCoroutine (CallSpill (spillQueueList[i]));
+		}
 
 
 		sideAboutToCollapse = (sideAboutToCollapse + 1) % 4;
@@ -266,7 +270,7 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	IEnumerator CallSpill(List<Tile> tilesToSpill){
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (totalSpillTime + 1f);
 		Spill (tilesToSpill);
 	}
 

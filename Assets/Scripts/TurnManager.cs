@@ -51,6 +51,10 @@ public class TurnManager : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (boardManager.totalSpillTime > 0) {
+			Debug.Log (boardManager.totalSpillTime);
+			boardManager.totalSpillTime -= Time.deltaTime;
+		}
 		if (!gameIsOver) {
 			IsAnythingTweening ();
 		}
@@ -329,11 +333,15 @@ public class TurnManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (2f);
+		yield return new WaitForSeconds (boardManager.totalSpillTime + 1.1f);
 		boardManager.CheckForScore ();
+		if (boardManager.scoring) {
+			yield return new WaitForSeconds (juicyManager.waitForScoreAnimation);
+			boardManager.scoring = false;
+		} 
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (boardManager.totalSpillTime - 2f);
+			yield return new WaitForSeconds (1f);
 			mode = "Game Over";
 		} else {
 			mode = "Spawn Tile";
