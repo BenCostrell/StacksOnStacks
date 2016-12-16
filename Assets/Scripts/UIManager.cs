@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityStandardAssets.ImageEffects;
 
 public class UIManager : MonoBehaviour {
 
@@ -13,6 +14,8 @@ public class UIManager : MonoBehaviour {
 
 	public bool undoSpill;
 
+	bool cameraShakeWasEnabled;
+
 
 	// Use this for initialization
 	void Start () {
@@ -21,6 +24,8 @@ public class UIManager : MonoBehaviour {
 
 		buttons = GetComponentsInChildren<Button>(true);
 		undoSpill = false;
+
+		cameraShakeWasEnabled = false;
 	}
 	
 	// Update is called once per frame
@@ -49,8 +54,46 @@ public class UIManager : MonoBehaviour {
 		turnmanager.FinalizeSpill ();
 	}
 
+	public void PauseButtonClick(){
+		transform.GetChild (0).gameObject.SetActive (false);
+		transform.GetChild (1).gameObject.SetActive (true);
+		//GameObject.FindWithTag ("MainCamera").GetComponent<BlurOptimized> ().enabled = true;
+		Camera.main.GetComponent<BlurOptimized>().enabled = true;
+		if (Camera.main.GetComponent<CameraShake> ().enabled) {
+			cameraShakeWasEnabled = true;
+			Camera.main.GetComponent<CameraShake>().enabled = false;
+		}
+
+		Time.timeScale = 0f;
+
+	}
+
+	public void ResumeButtonClick(){
+
+		Time.timeScale = 1f;
+		transform.GetChild (0).gameObject.SetActive (true);
+		transform.GetChild (1).gameObject.SetActive (false);
+		Camera.main.GetComponent<BlurOptimized> ().enabled = false;
+		if (cameraShakeWasEnabled) {
+			cameraShakeWasEnabled = false;
+			Camera.main.GetComponent<CameraShake>().enabled = true;
+		}
+
+		//Camera.main.GetComponent<BlurOptimized>().enabled = false;
+	}
+
 	public void RestartButtonClick(){
+
+		Time.timeScale = 1f;
 		SceneManager.LoadScene ("main");
+
+
+	}
+
+	public void MainMenuButtonClick(){
+
+		Time.timeScale = 1f;
+		SceneManager.LoadScene ("intro");
 
 	}
 }

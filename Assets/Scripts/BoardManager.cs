@@ -332,7 +332,9 @@ public class BoardManager : MonoBehaviour {
 				GameObject pre = Instantiate (scorePrefab,
 					                 new Vector3 (scorePrefab.transform.position.x + 45f * (score - 1), scorePrefab.transform.position.y, scorePrefab.transform.position.z),
 					                 Quaternion.identity) as GameObject;
-				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);
+				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform.GetChild(0).transform, false);
+
+				pre.GetComponent<Animator> ().SetTrigger ("actualEntry");
 
 				/*int prescore; //adjusting x coordinate
 				int prescore2; //adjusting y coordinate
