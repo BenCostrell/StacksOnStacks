@@ -97,6 +97,10 @@ public class TurnManager : MonoBehaviour {
 					iTween.MoveBy (scoreObjGroup, new Vector3 ((-s * 70f) / 2f, 0, 0), 1.0f);
 
 				}
+<<<<<<< Updated upstream
+=======
+				iTween.MoveBy (scoreObjGroup, new Vector3 ((boardManager.score-1f) * -35f, 0, 0), 1.0f);
+>>>>>>> Stashed changes
 
 			}
 		} else if (!anythingTweening) { 
