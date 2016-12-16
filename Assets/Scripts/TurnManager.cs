@@ -64,6 +64,7 @@ public class TurnManager : MonoBehaviour {
 						}
 						collapseSideIndicated = true;
 					}
+
 				}
 			}
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
@@ -278,7 +279,7 @@ public class TurnManager : MonoBehaviour {
 		boardManager.CheckForScore ();
 		numSidesCollapsed += 1;
 		if (numSidesCollapsed == 8) {
-			yield return new WaitForSeconds (boardManager.totalSpillTime);
+			yield return new WaitForSeconds (boardManager.totalSpillTime - 2f);
 			mode = "Game Over";
 		} else {
 			mode = "Spawn Tile";
