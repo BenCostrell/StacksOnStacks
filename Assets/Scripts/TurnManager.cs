@@ -284,7 +284,7 @@ public class TurnManager : MonoBehaviour {
 				zDirection = 1;
 			}
 			boardManager.QueueSpill (selectedSpace, xDirection, zDirection);
-			mode = "Finalize Spill";
+			StartCoroutine (ChangeModeToFinalizeSpill ());
 		} else {
 			mode = "Select Stack";
 			ToggleGlow (selectedSpace.tileList, false);
@@ -292,6 +292,12 @@ public class TurnManager : MonoBehaviour {
 		}
 		spillUI.SetActive (false);
 	}
+
+	IEnumerator ChangeModeToFinalizeSpill(){
+		yield return new WaitForSeconds (0.4f);
+		mode = "Finalize Spill";
+	}
+
 
 	public void UndoQueueSpill(){
 		spillUI.SetActive (true);
