@@ -9,6 +9,7 @@ TagManager:
   - TurnManager
   - JuicyManager
   - UICanvas
+  - ScoreSymbolsGroup
   layers:
   - Default
   - TransparentFX

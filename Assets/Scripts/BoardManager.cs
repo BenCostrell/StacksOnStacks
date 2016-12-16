@@ -329,10 +329,12 @@ public class BoardManager : MonoBehaviour {
 				scoring = true;
 				juicy.ScoreAnimation ();
 
+
 				GameObject pre = Instantiate (scorePrefab,
 					                 new Vector3 (scorePrefab.transform.position.x + 45f * (score - 1), scorePrefab.transform.position.y, scorePrefab.transform.position.z),
 					                 Quaternion.identity) as GameObject;
-				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform.GetChild(0).transform, false);
+				//pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform.GetChild(0).GetChild(6), false);
+				pre.transform.SetParent(GameObject.FindWithTag("ScoreSymbolsGroup").transform, false);
 
 				pre.GetComponent<Animator> ().SetTrigger ("actualEntry");
 

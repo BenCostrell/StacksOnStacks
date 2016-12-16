@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class TurnManager : MonoBehaviour {
 
+	bool gameIsOver;
 	public string phase;
 	public GameObject boardManagerObj;
 	private BoardManager boardManager;
@@ -43,15 +44,61 @@ public class TurnManager : MonoBehaviour {
 		GameOverUI.SetActive (false);
 		anythingTweening = false;
 		tileInPosition = false;
+		gameIsOver = false;
 
 		juicyManager = juicyManagerObj.GetComponent<JuicyManager> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		IsAnythingTweening ();
+		if (!gameIsOver) {
+			IsAnythingTweening ();
+		}
 		if (mode == "Game Over") {
-			GameOverUI.SetActive (true);
+			if (!gameIsOver) {
+				GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ().PauseButtonClick ();
+				GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (1).gameObject.SetActive (false);
+				GameOverUI.SetActive (true);
+
+				/*GameObject.FindWithTag ("UICanvas").transform.GetChild (0).GetChild (6).SetParent (
+					GameObject.FindWithTag ("UICanvas").transform.GetChild (1), false);
+				GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject.SetActive (true);*/
+				Time.timeScale = 1f;
+				gameIsOver = true;
+
+
+
+				//count up the score instead and then do cool animation with scoresymbol
+				List<GameObject> scoreSymbols = new List<GameObject> ();
+				float delayScore = 0f;
+				for (int s = 0; s < boardManager.score; s++) {
+					GameObject scoreObj = Instantiate (boardManager.scorePrefab,
+						new Vector3 (s * 70f,0,0), Quaternion.identity) as GameObject; 
+					scoreObj.GetComponent<Animator> ().enabled = false;
+					//scoreObj.transform.localScale = new Vector3 (0.12f,0.12f,0.12f);
+					scoreObj.transform.localScale = new Vector3(0,0,0);
+					GameObject scoreObjGroup = GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject;
+					scoreObj.transform.SetParent (scoreObjGroup.transform,false);
+					scoreSymbols.Add (scoreObj);
+					/*
+					iTween.ScaleTo (scoreObj, iTween.Hash(
+						"amount", new Vector3 (0.12f, 0.12f, 0.12f),
+						"time",1.0f,
+						"delay",delayScore
+					));
+					iTween.MoveBy (scoreObjGroup, iTween.Hash (
+						"amount", new Vector3 ((-s * 70f) / 2f, 0, 0),
+						"time", 1.0f,
+						"delay", delayScore
+					));
+					delayScore += 1.0f;
+					*/
+					iTween.ScaleTo (scoreObj, new Vector3 (0.12f, 0.12f, 0.12f), 1.0f);
+					iTween.MoveBy (scoreObjGroup, new Vector3 ((-s * 70f) / 2f, 0, 0), 1.0f);
+						
+				}
+
+			}
 		} else if (!anythingTweening) { 
 			if (mode == "Spawn Tile") {
 				if (juicyManager.finishedintro) {
