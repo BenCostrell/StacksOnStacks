@@ -187,6 +187,7 @@ public class BoardManager : MonoBehaviour {
 		juicy.zSpillDir = zDirection;
 		spaceToSpill.provisionalTileCount = 0;
 		spaceQueuedToSpillFrom = spaceToSpill; 
+		juicy.PositionStackToSpill (spaceToSpill);
 		for (int i = 0; i < numTilesToMove; i++) {
 			int index = numTilesToMove - 1 - i;
 			Tile tileToMove = spaceToSpill.tileList [index];

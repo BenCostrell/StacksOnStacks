@@ -138,6 +138,17 @@ public class JuicyManager : MonoBehaviour {
 
 	}
 
+	public void PositionStackToSpill(BoardSpace space){
+		List<Tile> tiles = space.tileList;
+		if (tiles.Count > 0) {
+			float topHeight = tiles [tiles.Count - 1].transform.position.y;
+			foreach (Tile tile in space.tileList) {
+				iTween.MoveBy (tile.gameObject, topHeight * Vector3.up, 0.5f);
+			}
+		}
+	}
+
+
 	public void AnimateTileMove(Tile tile, int tileCount, Vector3 pos){
 		if (turnmanager.mode == "Select Tile" || uimanager.undoSpill) {
 			delayTileSpill = 0f;
