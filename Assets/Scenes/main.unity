@@ -452,6 +452,7 @@ MonoBehaviour:
   waitForScoreAnimation: 0
   scorePitch: 0
   scoreSfx: {fileID: 8300000, guid: 22ab163cd5bef4c37813c8252c8e5b13, type: 3}
+  tilePlaceSfx: {fileID: 8300000, guid: 1d27f92c93337409b91b51813d72bb81, type: 3}
   boardSpaceEntered: 0
 --- !u!4 &223118582
 Transform:

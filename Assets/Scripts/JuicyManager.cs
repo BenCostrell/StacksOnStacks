@@ -172,6 +172,7 @@ public class JuicyManager : MonoBehaviour {
 				"delay", delayTileSpill
 
 			));
+			StartCoroutine(playTilePlaceSFX ());
 			//print (xSpillDir + ", " + zSpillDir);
 			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
@@ -224,7 +225,13 @@ public class JuicyManager : MonoBehaviour {
 
 	void setTileStraight(GameObject go){
 		go.transform.eulerAngles = new Vector3 (0, 0, 0);
+	}
 
+	IEnumerator playTilePlaceSFX(){
+		yield return new WaitForSeconds (delayTileSpill+0.5f);
+		GetComponent<AudioSource> ().clip = tilePlaceSfx;
+		//GetComponent<AudioSource> ().PlayOneShot(tilePlaceSfx,1f);
+		GetComponent<AudioSource> ().Play();
 	}
 
 	public void CollapseSideSpaces(GameObject go, int numOfSpaces){

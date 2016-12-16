@@ -201,6 +201,8 @@ public class TurnManager : MonoBehaviour {
 			}
 		}
 		mode = "Select Stack";
+		spawnedTile.GetComponent<AudioSource> ().Play ();
+
 	}
 
 
