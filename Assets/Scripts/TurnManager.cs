@@ -71,13 +71,13 @@ public class TurnManager : MonoBehaviour {
 				//count up the score instead and then do cool animation with scoresymbol
 				List<GameObject> scoreSymbols = new List<GameObject> ();
 				float delayScore = 0f;
+				GameObject scoreObjGroup = GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject;
 				for (int s = 0; s < boardManager.score; s++) {
 					GameObject scoreObj = Instantiate (boardManager.scorePrefab,
 						new Vector3 (s * 70f,0,0), Quaternion.identity) as GameObject; 
 					scoreObj.GetComponent<Animator> ().enabled = false;
 					//scoreObj.transform.localScale = new Vector3 (0.12f,0.12f,0.12f);
 					scoreObj.transform.localScale = new Vector3(0,0,0);
-					GameObject scoreObjGroup = GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject;
 					scoreObj.transform.SetParent (scoreObjGroup.transform,false);
 					scoreSymbols.Add (scoreObj);
 					/*
@@ -94,13 +94,8 @@ public class TurnManager : MonoBehaviour {
 					delayScore += 1.0f;
 					*/
 					iTween.ScaleTo (scoreObj, new Vector3 (0.12f, 0.12f, 0.12f), 1.0f);
-					iTween.MoveBy (scoreObjGroup, new Vector3 ((-s * 70f) / 2f, 0, 0), 1.0f);
-
 				}
-<<<<<<< Updated upstream
-=======
-				iTween.MoveBy (scoreObjGroup, new Vector3 ((boardManager.score-1f) * -35f, 0, 0), 1.0f);
->>>>>>> Stashed changes
+				iTween.MoveBy (scoreObjGroup, new Vector3 (-(boardManager.score-1)*35f), 0, 0), 1.0f);
 
 			}
 		} else if (!anythingTweening) { 
