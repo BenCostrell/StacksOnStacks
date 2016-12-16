@@ -200,26 +200,9 @@ public class TurnManager : MonoBehaviour {
 				bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
 			}
 		}
-
-		StartCoroutine (InitSelectStackMode ());
-
-	}
-
-	IEnumerator InitSelectStackMode(){
-		yield return new WaitForSeconds (0.5f);
-		List<Tile> tilesToFlash = new List<Tile> ();
-		foreach (BoardSpace space in boardManager.board) {
-			if (space != null) {
-				if (space.tileList.Count > 1) {
-					tilesToFlash.AddRange (space.tileList);
-				}
-			}
-		}
-		ToggleGlow (tilesToFlash, true);
-		yield return new WaitForSeconds (0.2f);
-		ToggleGlow (tilesToFlash, false);
 		mode = "Select Stack";
 	}
+
 
 	void DrawTileToPlace(){
 		Tile tileToPlace;
