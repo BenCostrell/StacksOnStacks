@@ -48,32 +48,12 @@ public class TurnManager : MonoBehaviour {
 
 		juicyManager = juicyManagerObj.GetComponent<JuicyManager> ();
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (!gameIsOver) {
 			IsAnythingTweening ();
 		}
-		if (mode == "Collapsing") {
-			if (juicyManager.tweensLeftToFinish == 0) {
-				foreach (BoardSpace space in boardManager.collapsingSpaces) {
-					boardManager.Spill (space);
-				}
-				boardManager.CheckForScore ();
-				mode = "Scoring";
-			}
-		}
-		if (mode == "Scoring") {
-			if (!anythingTweening) {
-				numSidesCollapsed += 1;
-				if (numSidesCollapsed == 8) {
-					mode = "Game Over";
-				} else {
-					mode = "Spawn Tile";
-				}
-			}
-		}
-
 		if (mode == "Game Over") {
 			if (!gameIsOver) {
 				GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ().PauseButtonClick ();
@@ -91,13 +71,13 @@ public class TurnManager : MonoBehaviour {
 				//count up the score instead and then do cool animation with scoresymbol
 				List<GameObject> scoreSymbols = new List<GameObject> ();
 				float delayScore = 0f;
-				GameObject scoreObjGroup = GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject;
 				for (int s = 0; s < boardManager.score; s++) {
 					GameObject scoreObj = Instantiate (boardManager.scorePrefab,
 						new Vector3 (s * 70f,0,0), Quaternion.identity) as GameObject; 
 					scoreObj.GetComponent<Animator> ().enabled = false;
 					//scoreObj.transform.localScale = new Vector3 (0.12f,0.12f,0.12f);
 					scoreObj.transform.localScale = new Vector3(0,0,0);
+					GameObject scoreObjGroup = GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject;
 					scoreObj.transform.SetParent (scoreObjGroup.transform,false);
 					scoreSymbols.Add (scoreObj);
 					/*
@@ -114,9 +94,9 @@ public class TurnManager : MonoBehaviour {
 					delayScore += 1.0f;
 					*/
 					iTween.ScaleTo (scoreObj, new Vector3 (0.12f, 0.12f, 0.12f), 1.0f);
+					iTween.MoveBy (scoreObjGroup, new Vector3 ((-s * 70f) / 2f, 0, 0), 1.0f);
 
 				}
-				iTween.MoveBy (scoreObjGroup, new Vector3 (-(boardManager.score-1f) * 35f, 0, 0), 1.0f);
 
 			}
 		} else if (!anythingTweening) { 
@@ -332,9 +312,9 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinalizeSpill(){
-		ToggleGlow (boardManager.spaceQueuedToSpillFrom.tileList, false);
+		ToggleGlow (boardManager.tilesQueuedToSpill, false);
 		mode = "Interim";
-		boardManager.Spill (boardManager.spaceQueuedToSpillFrom);
+		boardManager.Spill (boardManager.tilesQueuedToSpill);
 		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
 	}
@@ -342,6 +322,7 @@ public class TurnManager : MonoBehaviour {
 	IEnumerator InitSideCollapse(){
 		float wait;
 		if (boardManager.scoring) {
+			//wait = 2.5f;
 			wait = juicyManager.waitForScoreAnimation;
 			boardManager.scoring = false;
 		} else {
@@ -349,7 +330,16 @@ public class TurnManager : MonoBehaviour {
 		}
 		yield return new WaitForSeconds (wait);
 		boardManager.CollapseSide ();
-		mode = "Collapsing";
+		yield return new WaitForSeconds (2f);
+		boardManager.CheckForScore ();
+		numSidesCollapsed += 1;
+		if (numSidesCollapsed == 8) {
+			yield return new WaitForSeconds (boardManager.totalSpillTime - 2f);
+			mode = "Game Over";
+		} else {
+			mode = "Spawn Tile";
+		}
+		boardManager.totalSpillTime = 0f;
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){

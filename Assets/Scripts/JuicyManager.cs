@@ -37,8 +37,6 @@ public class JuicyManager : MonoBehaviour {
 
 	bool spawnTileEntry;
 
-	public int tweensLeftToFinish;
-
 
 	// Use this for initialization
 	void Start () {
@@ -54,7 +52,6 @@ public class JuicyManager : MonoBehaviour {
 		centerPos = new List<Vector3> ();
 
 		waitForScoreAnimation = 2f;
-		tweensLeftToFinish = 0;
 
 		boardSpaceEntered = false;
 		spawnTileEntry = true;
@@ -80,7 +77,7 @@ public class JuicyManager : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (!finishedintro && boardmanager.boardInitialized) {
@@ -92,7 +89,7 @@ public class JuicyManager : MonoBehaviour {
 				centerPos.Add (space.transform.position);
 			}
 		}
-		
+
 	}
 
 	public void spawnTileAnimation(GameObject tile){
@@ -183,9 +180,7 @@ public class JuicyManager : MonoBehaviour {
 				"position", new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z),
 				"path",path,
 				"time", tileTime,
-				"delay", delayTileSpill,
-				"oncomplete", "MoveFinished",
-				"oncompletetarget", transform.gameObject
+				"delay", delayTileSpill
 
 			));
 			StartCoroutine(playTilePlaceSFX ());
@@ -232,15 +227,11 @@ public class JuicyManager : MonoBehaviour {
 				));
 
 			}
-		
+
 		} else {
 			tile.transform.position = new Vector3 (pos.x, tileCount * 0.2f + 0.1f, pos.z);
 
 		}
-	}
-
-	void MoveFinished(){
-		tweensLeftToFinish -= 1;
 	}
 
 	void setTileStraight(GameObject go){
@@ -367,12 +358,12 @@ public class JuicyManager : MonoBehaviour {
 
 
 	void tileEnterSound(GameObject go){
-		
+
 		go.GetComponent<AudioSource> ().Play ();
 	}
 
 	void boardSpaceEnterSound(GameObject go){
 		go.GetComponent<AudioSource> ().Play ();
 	}
-	
+
 }
