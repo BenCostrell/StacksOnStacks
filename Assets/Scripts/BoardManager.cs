@@ -32,6 +32,8 @@ public class BoardManager : MonoBehaviour {
 
 	public float totalSpillTime;
 
+	TurnManager turnManager;
+
 	public Material[] mats;
 	/*
 	 * index:	1) board1
@@ -44,6 +46,8 @@ public class BoardManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+
 		numCols = 6;
 		numRows = 6;
 
@@ -59,9 +63,12 @@ public class BoardManager : MonoBehaviour {
 		scoring = false;
 
 		juicy = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager>();
+		turnManager = GameObject.FindWithTag ("TurnManager").GetComponent<TurnManager> ();
 		CreateBoard ();
 		CreateTileBag ();
 		boardInitialized = false;
+		/*mats [0].color = juicy.juicyColors [0, 1];
+		mats [1].color = juicy.juicyColors [0, 2];*/
 	}
 
 	// Update is called once per frame
@@ -271,6 +278,8 @@ public class BoardManager : MonoBehaviour {
 
 	IEnumerator CallSpill(List<Tile> tilesToSpill){
 		yield return new WaitForSeconds (totalSpillTime + 1f);
+		turnManager.collapsingMode = false;
+		//turnManager.scoringMode = true;
 		Spill (tilesToSpill);
 	}
 
@@ -330,32 +339,13 @@ public class BoardManager : MonoBehaviour {
 			}
 			if (colorred && colorblue && coloryellow && colorgreen) {
 				score += 1;
-				//scoreUI.GetComponent<Text> ().text = "SCORE: " + score;
 				scoring = true;
 				juicy.ScoreAnimation ();
-
-
 				GameObject pre = Instantiate (scorePrefab,
 					new Vector3 (scorePrefab.transform.position.x + 45f * (score - 1), scorePrefab.transform.position.y, scorePrefab.transform.position.z),
 					Quaternion.identity) as GameObject;
-				//pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform.GetChild(0).GetChild(6), false);
 				pre.transform.SetParent(GameObject.FindWithTag("ScoreSymbolsGroup").transform, false);
-
 				pre.GetComponent<Animator> ().SetTrigger ("actualEntry");
-
-				/*int prescore; //adjusting x coordinate
-				int prescore2; //adjusting y coordinate
-				if (score % 2 == 0) { // every even score (2, 4, 6, etc.) - x should be static, y should be static
-					prescore = 1;
-					prescore2 = score - 1;
-				} else { //every odd score (1, 3, 5, etc.) - x should be static, y is dynamic
-					prescore = 0;
-					prescore2 = score;
-				}
-				GameObject pre = Instantiate (scorePrefab,
-					new Vector3(scorePrefab.transform.position.x+60f*(prescore),scorePrefab.transform.position.y-30f*(prescore2-1), scorePrefab.transform.position.z),
-					Quaternion.identity) as GameObject;
-				pre.transform.SetParent (GameObject.FindWithTag ("UICanvas").transform, false);*/
 			}
 			centerSpaceChanged = false;
 		}

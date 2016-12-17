@@ -24,6 +24,7 @@ public class TurnManager : MonoBehaviour {
 	public GameObject spillUIPrefab;
 	public GameObject spillUI;
 	public GameObject GameOverUI;
+	public GameObject FinalScoreUI;
 	private bool firstTileFinalized;
 	private int numSidesCollapsed;
 	public bool anythingTweening;
@@ -71,11 +72,11 @@ public class TurnManager : MonoBehaviour {
 
 				GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ().PauseButtonClick ();
 				GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (1).gameObject.SetActive (false);
-				GameOverUI.SetActive (true);
-
-				/*GameObject.FindWithTag ("UICanvas").transform.GetChild (0).GetChild (6).SetParent (
-					GameObject.FindWithTag ("UICanvas").transform.GetChild (1), false);
-				GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (4).gameObject.SetActive (true);*/
+				if (boardManager.score > 0) {
+					FinalScoreUI.SetActive (true);
+				} else {
+					GameOverUI.SetActive (true);
+				}
 				Time.timeScale = 1f;
 				gameIsOver = true;
 
@@ -194,7 +195,9 @@ public class TurnManager : MonoBehaviour {
 			}
 		} else if (brightness == "normal") {
 			foreach (Tile tile in tiles) {
-				tile.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Standard");
+				if (tile != null) {
+					tile.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Standard");
+				}
 			}
 		} else if (brightness == "dark") {
 			foreach (Tile tile in tiles) {
@@ -385,8 +388,6 @@ public class TurnManager : MonoBehaviour {
 		collapsingMode = true;
 		boardManager.CollapseSide ();
 		yield return new WaitForSeconds (boardManager.totalSpillTime + 1.35f);
-		collapsingMode = false;
-		scoringMode = true;
 		boardManager.CheckForScore ();
 		if (boardManager.scoring) {
 			yield return new WaitForSeconds (juicyManager.waitForScoreAnimation);
@@ -400,7 +401,6 @@ public class TurnManager : MonoBehaviour {
 			mode = "Spawn Tile";
 		}
 		boardManager.totalSpillTime = 0f;
-		scoringMode = false;
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){

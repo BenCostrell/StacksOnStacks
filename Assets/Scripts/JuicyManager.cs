@@ -9,6 +9,8 @@ public class JuicyManager : MonoBehaviour {
 	TurnManager turnmanager;
 	UIManager uimanager;
 
+	public SpriteRenderer gradient;
+
 	int countTileList;
 	bool playTileSinkSound;
 	public bool gameend;
@@ -45,12 +47,16 @@ public class JuicyManager : MonoBehaviour {
 
 	bool collapseSideSpaceStarted;
 
-	Color[,] juicyColors;
-	Color[] lastColors;
+	Color[] juicyColors;
+	Color lastColor;
 
-	float fadetime = 1.0f;
+	float fadetime = 0.2f;
 	float tColor;
 
+	bool scoringInitialized;
+
+
+	int colorIndex;
 
 	// Use this for initialization
 	void Start () {
@@ -72,46 +78,14 @@ public class JuicyManager : MonoBehaviour {
 		boardSpaceEntered = false;
 		spawnTileEntry = true;
 
-		juicyColors = new Color[5, 3];
+		juicyColors = new Color[5];
+		juicyColors[0] = normalizeColors(160f,111f,180f); //campurple
+		juicyColors[1] = normalizeColors(0f, 97f, 189f); //camblue
+		juicyColors[2] = normalizeColors(83f, 234f, 172f); //camgreen
+		juicyColors[3] = normalizeColors(148f,59f,92f); //camred
+		juicyColors[4] = normalizeColors(251f,194f,123f); //camyellow
 
-		/*
-		juicyColors[0,0] = new Color (0x6E, 0x36, 0X7D, 0xFF); //campurple
-		juicyColors[0,1] = new Color(0x8D,0x83,0x90,0xFF); //purple1
-		juicyColors[0,2] = new Color(0x84,0x7D,0x87,0xFF); //purple2
-		juicyColors[1,0] = new Color(0x36,0x53,0x7D,0xFF); //camblue
-		juicyColors[1,1] = new Color(0X5C,0x8E,0xAC,0xFF); //blue1
-		juicyColors[1,2] = new Color(0x5B,0x86,0xA5,0xFF); //blue2
-		juicyColors[2,0] = new Color(0x43,0x83,0x69,0xFF); //camgreen
-		juicyColors[2,1] = new Color(0x5C,0xAC,0x77,0xFF); //green1
-		juicyColors[2,2] = new Color(0x5B,0xA5,0x64,0xFF); //gren2
-		juicyColors[3,0] = new Color(0x94,0x3B,0x5C,0xFF); //camred
-		juicyColors[3,1] = new Color(0xB5,0x6D,0x75,0XFF); //red1
-		juicyColors[3,2] = new Color(0xAE,0x60,0x71,0xFF); //red2
-		juicyColors[4,0] = new Color(0xFB,0xC2,0x7B,0xFF); //camyellow
-		juicyColors[4,1] = new Color(0xD9,0xBE,0x64,0xFF); //yellow1
-		juicyColors[4,2] = new Color(0xD9,0xB7,0x5B,0xFF); //yellow2
-*/
-
-		juicyColors[0,0] = normalizeColors(110f,54f,126f); //campurple
-		//juicyColors[0,1] = normalizeColors(); //purple1
-		//juicyColors[0,2] = normalizeColors(); //purple2
-		juicyColors[1,0] = normalizeColors(54f, 83f, 125f); //camblue
-		/*juicyColors[1,1] = normalizeColors(); //blue1
-		juicyColors[1,2] = normalizeColors(); //blue2*/
-		juicyColors[2,0] = normalizeColors(67f, 131f, 105f); //camgreen
-	/*	juicyColors[2,1] = normalizeColors(); //green1
-		juicyColors[2,2] = normalizeColors(); //gren2*/
-		juicyColors[3,0] = normalizeColors(148f,59f,92f); //camred
-	/*	juicyColors[3,1] = normalizeColors(); //red1
-		juicyColors[3,2] = normalizeColors(); //red2*/
-		juicyColors[4,0] = normalizeColors(251f,194f,123f); //camyellow
-	/*	juicyColors[4,1] = normalizeColors(); //yellow1
-		juicyColors[4,2] = normalizeColors(); //yellow2*/
-
-		lastColors = new Color[3];
-		lastColors [0] = juicyColors [0, 0];
-	/*	lastColors [1] = juicyColors [0, 1];
-		lastColors [2] = juicyColors [0, 2];*/
+		lastColor = juicyColors [0];
 
 	}
 
@@ -150,65 +124,41 @@ public class JuicyManager : MonoBehaviour {
 			}
 		}
 
-		if (turnmanager.mode == "Spawn Tile") {
-			if (lastColors [0] != juicyColors [0, 0]) {
-				if (tColor < 1f) {
-					tColor += Time.deltaTime / fadetime;
-					Camera.main.backgroundColor = Color.Lerp (lastColors [0], juicyColors [0, 0], tColor);
+		ColorPhases ();
 
-				} else {
-					lastColors [0] = juicyColors [0, 0];
-					tColor = 0f;
-				}
-			}
-		} else if (turnmanager.mode == "Place Tile") {
-			if (lastColors [0] != juicyColors [1, 0]) {
-				if (tColor < 1f) {
-					tColor += Time.deltaTime / fadetime;
-					Camera.main.backgroundColor = Color.Lerp (lastColors [0], juicyColors [1, 0], tColor);
 
-				} else {
-					lastColors [0] = juicyColors [1, 0];
-					tColor = 0f;
-				}
-			}
-		} else if (turnmanager.mode == "Select Stack") {
-			if (lastColors [0] != juicyColors [2, 0]) {
-				if (tColor < 1f) {
-					tColor += Time.deltaTime / fadetime;
-					Camera.main.backgroundColor = Color.Lerp (lastColors [0], juicyColors [2, 0], tColor);
+	}
 
-				} else {
-					lastColors [0] = juicyColors [2, 0];
-					tColor = 0f;
-				}
-			}
-		} else if (turnmanager.collapsingMode) {
-			if (lastColors [0] != juicyColors [3,0]) {
-				if (tColor < 1f) {
-					tColor += Time.deltaTime / fadetime;
-					Camera.main.backgroundColor = Color.Lerp (lastColors [0], juicyColors [3, 0], tColor);
-
-				} else {
-					lastColors [0] = juicyColors [3, 0];
-					tColor = 0f;
-				}
-			}
-		//} else if (turnmanager.mode == "Scoring") {
-		} else if(turnmanager.scoringMode){
-			if (lastColors [0] != juicyColors [4, 0]) {
-				if (tColor < 1f) {
-					tColor += Time.deltaTime / fadetime;
-					Camera.main.backgroundColor = Color.Lerp (lastColors [0], juicyColors [4, 0], tColor);
-
-				} else {
-					lastColors [0] = juicyColors [4, 0];
-					tColor = 0f;
-				}
-			}
+	void ColorPhases(){
+		if (turnmanager.mode == "Select Tile") {
+			turnmanager.scoringMode = false;
+			colorIndex = 0;
+		}
+		if (turnmanager.mode == "Place Tile") {
+			colorIndex = 1;
+		}
+		if (turnmanager.mode == "Select Stack") {
+			colorIndex = 2;
 		}
 
+		if (turnmanager.collapsingMode) {
+			turnmanager.scoringMode = false;
+			colorIndex = 3;
+		}
+		if(turnmanager.scoringMode){
+			colorIndex = 4;
+		}
 
+		if (lastColor != juicyColors [colorIndex]) {
+			if (tColor < 1f) {
+				tColor += Time.deltaTime / fadetime;
+				gradient.color = Color.Lerp (lastColor, juicyColors [colorIndex], tColor);
+
+			} else {
+				lastColor = juicyColors [colorIndex];
+				tColor = 0f;
+			}
+		}
 	}
 
 	Color normalizeColors(float r, float g, float b){
@@ -303,6 +253,8 @@ public class JuicyManager : MonoBehaviour {
 	}
 
 	public void TileSinkAnimation(GameObject tile, GameObject centertile){
+		//print ("why");
+		turnmanager.scoringMode = true;
 		playTileAbsorbSound ();
 
 		List<GameObject> go = new List<GameObject> ();
