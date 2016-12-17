@@ -10,6 +10,7 @@ TagManager:
   - JuicyManager
   - UICanvas
   - ScoreSymbolsGroup
+  - SoundPlayer
   layers:
   - Default
   - TransparentFX

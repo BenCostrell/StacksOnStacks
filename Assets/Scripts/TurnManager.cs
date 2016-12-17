@@ -30,6 +30,8 @@ public class TurnManager : MonoBehaviour {
 	private bool tileInPosition;
 	private BoardSpace highlightedSpace;
 
+	GameObject soundplayer;
+
 	public GameObject juicyManagerObj;
 	private JuicyManager juicyManager;
 
@@ -37,6 +39,7 @@ public class TurnManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 		boardManager = boardManagerObj.GetComponent<BoardManager> ();
 		mode = "Spawn Tile"; //spawn tile, select tile, place tile 0 (you haven't placed it anywhere yet), place tile 1 (you've placed it somewhere, but not finalized), select stack
 		rotationIndex = 0;
@@ -53,7 +56,7 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (boardManager.totalSpillTime > 0) {
-			Debug.Log (boardManager.totalSpillTime);
+			//Debug.Log (boardManager.totalSpillTime);
 			boardManager.totalSpillTime -= Time.deltaTime;
 		}
 		if (!gameIsOver) {
@@ -61,6 +64,9 @@ public class TurnManager : MonoBehaviour {
 		}
 		if (mode == "Game Over") {
 			if (!gameIsOver) {
+				juicyManager.EndGameJuice ();
+
+
 				GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ().PauseButtonClick ();
 				GameObject.FindWithTag ("UICanvas").transform.GetChild (1).GetChild (1).gameObject.SetActive (false);
 				GameOverUI.SetActive (true);
@@ -81,26 +87,20 @@ public class TurnManager : MonoBehaviour {
 					GameObject scoreObj = Instantiate (boardManager.scorePrefab,
 						new Vector3 (s * 70f,0,0), Quaternion.identity) as GameObject; 
 					scoreObj.GetComponent<Animator> ().enabled = false;
-					//scoreObj.transform.localScale = new Vector3 (0.12f,0.12f,0.12f);
 					scoreObj.transform.localScale = new Vector3(0,0,0);
 					scoreObj.transform.SetParent (scoreObjGroup.transform,false);
 					scoreSymbols.Add (scoreObj);
-					/*
-					iTween.ScaleTo (scoreObj, iTween.Hash(
-						"amount", new Vector3 (0.12f, 0.12f, 0.12f),
-						"time",1.0f,
-						"delay",delayScore
-					));
-					iTween.MoveBy (scoreObjGroup, iTween.Hash (
-						"amount", new Vector3 ((-s * 70f) / 2f, 0, 0),
-						"time", 1.0f,
-						"delay", delayScore
-					));
-					delayScore += 1.0f;
-					*/
 					iTween.ScaleTo (scoreObj, new Vector3 (0.12f, 0.12f, 0.12f), 1.0f);
 				}
-				iTween.MoveBy (scoreObjGroup, new Vector3 (-(boardManager.score-1)*35f, 0, 0), 1.0f);
+				iTween.MoveTo (scoreObjGroup, iTween.Hash (
+					"position", new Vector3 ((boardManager.score - 1) * -35f, -34.5f, 0),
+					"time", 1.0f,
+					"islocal",true,
+					"oncomplete", "endScoreAnimation",
+					"oncompletetarget", juicyManagerObj,
+					"oncompleteparams", scoreSymbols
+
+				));
 
 			}
 		} else if (!anythingTweening) { 
@@ -149,6 +149,7 @@ public class TurnManager : MonoBehaviour {
 			}
 		}
 	}
+
 
 	bool SelectStack(Ray ray){
 		bool stackSelected = false;
@@ -317,6 +318,7 @@ public class TurnManager : MonoBehaviour {
 	void InitQueueSpill(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spillUILayer)) {
+			soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
 			int xDirection = 0;
 			int zDirection = 0;
 			if (hit.collider.transform.name == "MinusX") {

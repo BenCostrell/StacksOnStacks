@@ -9,10 +9,14 @@ public class JuicyManager : MonoBehaviour {
 	TurnManager turnmanager;
 	UIManager uimanager;
 
+	int countTileList;
+	bool playTileSinkSound;
+	public bool gameend;
 	public float xSpillDir;
 	public float zSpillDir;
 
 	public bool finishedintro;
+	public bool realfinishedintro;
 	public bool scoring;
 
 	float boardSpaceBeginY = -15.0f;
@@ -35,7 +39,11 @@ public class JuicyManager : MonoBehaviour {
 
 	public bool boardSpaceEntered;
 
-	bool spawnTileEntry;
+	public bool spawnTileEntry;
+
+	GameObject soundplayer;
+
+	bool collapseSideSpaceStarted;
 
 
 	// Use this for initialization
@@ -43,11 +51,13 @@ public class JuicyManager : MonoBehaviour {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
 		uimanager = GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ();
+		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 		stackHeights = new List<float> ();
 
 		delaySpaceCollapse = 0f;
 		spaceCount = 0;
 		finishedintro = false;
+		realfinishedintro = false;
 
 		centerPos = new List<Vector3> ();
 
@@ -74,6 +84,10 @@ public class JuicyManager : MonoBehaviour {
 			} else {
 				turnmanager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = false;
 				spawnTileEntry = true;
+				soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
+			}
+			if (!realfinishedintro) {
+				realfinishedintro = true;
 			}
 		}
 	}
@@ -90,13 +104,16 @@ public class JuicyManager : MonoBehaviour {
 			}
 		}
 
+
 	}
 
 	public void spawnTileAnimation(GameObject tile){
+
+		soundplayer.transform.GetChild (4).gameObject.GetComponent<AudioSource> ().Play ();
 		iTween.MoveFrom (tile, iTween.Hash(
 			"position",new Vector3(-9,0,0),
 			"islocal", true,
-			"time", 1.0f,
+			"time", 0.5f,
 			"easetype","easeOutElastic",
 			"oncomplete","toggleSpawnTileAnim",
 			"oncompletetarget",transform.gameObject,
@@ -105,10 +122,12 @@ public class JuicyManager : MonoBehaviour {
 		iTween.RotateTo (tile, iTween.Hash (
 			"rotation", new Vector3 (0, 0, 0),
 			"islocal", true,
-			"time", 1.0f
+			"time", 0.5f
 		));
 
 	}
+
+
 
 	void toggleSpawnTileAnim(GameObject tile){
 
@@ -118,9 +137,9 @@ public class JuicyManager : MonoBehaviour {
 			tile.GetComponent<Animator> ().enabled = false;
 		}
 
-
 		spawnTileEntry = false;
 	}
+
 
 	public void ScoreAnimation(){
 		scorePitch = 1f;
@@ -146,6 +165,63 @@ public class JuicyManager : MonoBehaviour {
 				iTween.MoveBy (tile.gameObject, topHeight * Vector3.up, 0.5f);
 			}
 		}
+	}
+
+	public void EndGameJuice(){
+		gameend = true;
+		if (boardmanager.score > 0) {
+			soundplayer.transform.GetChild (3).gameObject.GetComponent<AudioSource> ().Play ();
+
+		} else {
+			soundplayer.transform.GetChild (2).gameObject.GetComponent<AudioSource> ().Play ();
+		}
+
+		StartCoroutine (FadeOut (soundplayer.GetComponent<AudioSource>(), 0.5f));
+
+	}
+
+	IEnumerator FadeOut (AudioSource audioSource, float FadeTime) {
+		float startVolume = audioSource.volume;
+		float decreasevolume = 0.01f;
+		while (audioSource.volume > 0) {
+			audioSource.volume -= decreasevolume;
+			yield return null;
+		}
+
+		audioSource.Stop ();
+		audioSource.volume = startVolume;
+	}
+
+	public void TileSinkAnimation(GameObject tile, GameObject centertile){
+		playTileAbsorbSound ();
+
+		List<GameObject> go = new List<GameObject> ();
+		go.Add (tile);
+		go.Add (centertile);
+		iTween.MoveTo (tile, iTween.Hash (
+			"position",new Vector3(centertile.transform.position.x,centertile.transform.position.y-0.05f,centertile.transform.position.z),
+			"time",0.2f
+		));
+		iTween.ScaleTo (tile, iTween.Hash (
+			"scale", new Vector3 (0, 0, 0),
+			"time", 0.05f,
+			"delay", 0.15f,
+			"oncomplete","destroyTileSink",
+			"oncompletetarget",transform.gameObject,
+			"oncompleteparams",go
+		));
+
+	}
+
+	public void playTileAbsorbSound(){
+		if (!soundplayer.transform.GetChild (7).gameObject.GetComponent<AudioSource> ().isPlaying) {
+			soundplayer.transform.GetChild (7).gameObject.GetComponent<AudioSource> ().Play ();
+		}
+	}
+
+	void destroyTileSink(List<GameObject> go){
+		go[1].GetComponent<BoardSpace>().color = go[0].GetComponent<Tile>().color;
+		Destroy (go[0]);
 	}
 
 
@@ -184,7 +260,6 @@ public class JuicyManager : MonoBehaviour {
 
 			));
 			StartCoroutine(playTilePlaceSFX ());
-			//print (xSpillDir + ", " + zSpillDir);
 			if (xSpillDir == 0 && zSpillDir == 1) { //up
 				float vrot = 180.0f;
 				iTween.RotateAdd (tile.gameObject, iTween.Hash (
@@ -234,6 +309,17 @@ public class JuicyManager : MonoBehaviour {
 		}
 	}
 
+
+	void endScoreAnimation(List<GameObject> scores){
+		foreach(GameObject score in scores){
+			iTween.PunchScale (score, iTween.Hash (
+				"amount", new Vector3(0.05f,0.05f,0),
+				"time", 2.5f,
+				"looptype","loop"
+			));
+		}
+	}
+
 	void setTileStraight(GameObject go){
 		go.transform.eulerAngles = new Vector3 (0, 0, 0);
 	}
@@ -246,6 +332,11 @@ public class JuicyManager : MonoBehaviour {
 	}
 
 	public void CollapseSideSpaces(GameObject go, int numOfSpaces){
+
+		if (!collapseSideSpaceStarted) {
+			soundplayer.transform.GetChild (1).gameObject.GetComponent<AudioSource> ().Play ();
+			collapseSideSpaceStarted = true;
+		}
 
 		Camera.main.GetComponent<CameraShake> ().enabled = true;
 		Camera.main.GetComponent<CameraShake> ().shakeDuration = 0.5f;
@@ -260,10 +351,10 @@ public class JuicyManager : MonoBehaviour {
 		));
 		delaySpaceCollapse += 0.2f;
 		spaceCount++;
-		//print (spaceCount + ", " + delaySpaceCollapse + ","+ numOfSpaces);
 		if (spaceCount == numOfSpaces) {
 			delaySpaceCollapse = 0f;
 			spaceCount = 0;
+			collapseSideSpaceStarted = false;
 		}
 	}
 

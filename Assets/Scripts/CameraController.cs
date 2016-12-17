@@ -8,6 +8,9 @@ public class CameraController : MonoBehaviour {
 	private TurnManager turnManager;
 	public int currentPositionIndex;
 
+	GameObject soundplayer;
+
+
 	JuicyManager juicymanager;
 
 	// Use this for initialization
@@ -18,6 +21,8 @@ public class CameraController : MonoBehaviour {
 		transform.parent.transform.position = new Vector3(10,0,0);
 
 		juicymanager = GameObject.FindWithTag ("JuicyManager").GetComponent<JuicyManager> ();
+
+		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 	}
 	
 	// Update is called once per frame
@@ -61,6 +66,10 @@ public class CameraController : MonoBehaviour {
 				"time", 0.8f,
 				"easetype", "easeOutBack"
 			));
+		}
+
+		if (!soundplayer.transform.GetChild (0).gameObject.GetComponent<AudioSource> ().isPlaying) {
+			soundplayer.transform.GetChild (0).gameObject.GetComponent<AudioSource> ().Play ();
 		}
 	}
 }

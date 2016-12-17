@@ -16,11 +16,14 @@ public class UIManager : MonoBehaviour {
 
 	bool cameraShakeWasEnabled;
 
+	GameObject soundplayer;
+
 
 	// Use this for initialization
 	void Start () {
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
+		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 
 		buttons = GetComponentsInChildren<Button>(true);
 		undoSpill = false;
@@ -46,15 +49,18 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void UndoButtonClick(){
+		soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
 		turnmanager.UndoQueueSpill ();
 		undoSpill = true;
 	}
 
 	public void ConfirmButtonClick(){
+		soundplayer.transform.GetChild (6).gameObject.GetComponent<AudioSource> ().Play ();
 		turnmanager.FinalizeSpill ();
 	}
 
 	public void PauseButtonClick(){
+		soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
 		transform.GetChild (0).gameObject.SetActive (false);
 		transform.GetChild (1).gameObject.SetActive (true);
 		//GameObject.FindWithTag ("MainCamera").GetComponent<BlurOptimized> ().enabled = true;
@@ -69,7 +75,7 @@ public class UIManager : MonoBehaviour {
 	}
 
 	public void ResumeButtonClick(){
-
+		soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
 		Time.timeScale = 1f;
 		transform.GetChild (0).gameObject.SetActive (true);
 		transform.GetChild (1).gameObject.SetActive (false);
