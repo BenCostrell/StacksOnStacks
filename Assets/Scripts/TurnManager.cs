@@ -138,6 +138,9 @@ public class TurnManager : MonoBehaviour {
 						SetupSpawnedTile (spawnedTile);
 						mode = "Select Tile";
 						ToggleGlow (spawnedTile, "normal");
+						foreach (BoardSpace space in boardManager.board) {
+							ToggleGlow (space, "normal");
+						}
 					}
 				} else if (mode == "Select Stack") {
 					SelectStack (ray);
