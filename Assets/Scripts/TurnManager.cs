@@ -59,7 +59,6 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (boardManager.totalSpillTime > 0) {
-			//Debug.Log (boardManager.totalSpillTime);
 			boardManager.totalSpillTime -= Time.deltaTime;
 		}
 		if (!gameIsOver) {
@@ -365,11 +364,12 @@ public class TurnManager : MonoBehaviour {
 		ToggleGlow (boardManager.tilesQueuedToSpill, "normal");
 		mode = "Interim";
 		boardManager.Spill (boardManager.tilesQueuedToSpill);
-		boardManager.CheckForScore ();
 		StartCoroutine (InitSideCollapse());
 	}
 
 	IEnumerator InitSideCollapse(){
+		yield return new WaitForSeconds (0.25f);
+		boardManager.CheckForScore ();
 		float wait;
 		if (boardManager.scoring) {
 			//wait = 2.5f;
@@ -381,7 +381,7 @@ public class TurnManager : MonoBehaviour {
 		yield return new WaitForSeconds (wait);
 		collapsingMode = true;
 		boardManager.CollapseSide ();
-		yield return new WaitForSeconds (boardManager.totalSpillTime + 1.1f);
+		yield return new WaitForSeconds (boardManager.totalSpillTime + 1.35f);
 		collapsingMode = false;
 		scoringMode = true;
 		boardManager.CheckForScore ();
