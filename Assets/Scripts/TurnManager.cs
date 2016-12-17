@@ -28,6 +28,7 @@ public class TurnManager : MonoBehaviour {
 	private int numSidesCollapsed;
 	public bool anythingTweening;
 	private bool tileInPosition;
+	private BoardSpace highlightedSpace;
 
 	public GameObject juicyManagerObj;
 	private JuicyManager juicyManager;
@@ -111,6 +112,7 @@ public class TurnManager : MonoBehaviour {
 						List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
 						foreach (BoardSpace bs in boardspaces) {
 							bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+							bs.aboutToCollapse = true;
 						}
 						collapseSideIndicated = true;
 					}
@@ -133,7 +135,7 @@ public class TurnManager : MonoBehaviour {
 					} else {
 						SetupSpawnedTile (spawnedTile);
 						mode = "Select Tile";
-						ToggleGlow (spawnedTile, false);
+						ToggleGlow (spawnedTile, "normal");
 					}
 				} else if (mode == "Select Stack") {
 					SelectStack (ray);
@@ -159,11 +161,11 @@ public class TurnManager : MonoBehaviour {
 					stackSelected = true;
 					if (selectedSpace != null) {
 						if (selectedSpace != space) {
-							ToggleGlow (selectedSpace.tileList, false);
-							ToggleGlow (space.tileList, true);
+							ToggleGlow (selectedSpace.tileList, "normal");
+							ToggleGlow (space.tileList, "bright");
 						}
 					} else {
-						ToggleGlow (space.tileList, true);
+						ToggleGlow (space.tileList, "bright");
 					}
 					selectedSpace = space;
 					mode = "Queue Spill";
@@ -179,31 +181,58 @@ public class TurnManager : MonoBehaviour {
 		return stackSelected;
 	}
 
-	void ToggleGlow(List<Tile> tiles, bool on){
-		if (on) {
+	void ToggleGlow(List<Tile> tiles, string brightness){
+		if (brightness == "bright") {
 			foreach (Tile tile in tiles) {
-				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Self-Illumin/Outlined Diffuse");
+				tile.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined Diffuse");
 			}
-		} else {
+		} else if (brightness == "normal") {
 			foreach (Tile tile in tiles) {
-				tile.transform.GetComponent<Renderer>().material.shader = Shader.Find("Standard");
+				tile.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Standard");
+			}
+		} else if (brightness == "dark") {
+			foreach (Tile tile in tiles) {
+				tile.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined DiffuseAlt");
 			}
 		}
 	}
 
-	void ToggleGlow(Tile tile, bool on){
+	void ToggleGlow(Tile tile, string brightness){
 		List<Tile> tiles = new List<Tile> ();
 		tiles.Add (tile);
-		ToggleGlow(tiles, on);
+		ToggleGlow(tiles, brightness);
+	}
+
+	void ToggleGlow(BoardSpace space, string brightness){
+		if (!space.aboutToCollapse) {
+			if (brightness == "bright") {
+				space.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined Diffuse");
+			} else if (brightness == "normal") {
+				space.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Standard");
+			} else if (brightness == "dark") {
+				space.transform.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined DiffuseAlt");
+			}
+		}
+		ToggleGlow (space.tileList, brightness);
 	}
 
 	void SelectTile(Ray ray){
 		RaycastHit hit;
 		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spawnedTileLayer)) {
 			mode = "Place Tile";
-			ToggleGlow(spawnedTile, true);
+			ToggleGlow(spawnedTile, "bright");
+			SetSpaceGlow ("dark");
 		}
+	}
 
+	void SetSpaceGlow(string brightness){
+		foreach (BoardSpace space in boardManager.board) {
+			if (space != null) {
+				if (!space.isCenterTile && (space.tileList.Count < 1)) {
+					ToggleGlow (space, brightness);
+				}
+			}
+		}
 	}
 
 	void PlaceTile(Ray ray){
@@ -214,20 +243,37 @@ public class TurnManager : MonoBehaviour {
 				spawnedTile.transform.position = new Vector3 (pointOnBoard.x, pointOnBoard.y + 0.2f, pointOnBoard.z);
 				spawnedTile.transform.parent = null;
 				tileInPosition = true;
+				BoardSpace space = CalculateSpaceFromLocation (pointOnBoard);
+				ToggleGlow (space, "bright");
+				if (highlightedSpace != null) {
+					if (highlightedSpace != space) {
+						ToggleGlow (highlightedSpace, "normal");
+					}
+				}
+				highlightedSpace = space;
 			}
 		} else {
 			tileInPosition = false;
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, invisibleBoardPlaneLayer)){
 				spawnedTile.transform.position = hit.point;
 			}
+			if (highlightedSpace != null) {
+				ToggleGlow (highlightedSpace, "normal");
+				highlightedSpace = null;
+			}
 		}
 	}
+
 
 	public void FinalizeTilePlacement(){
 		BoardSpace space = CalculateSpaceFromLocation (spawnedTile.transform.position);
 		space.AddTile (spawnedTile, false);
 		spawnedTile.GetComponent<MeshRenderer> ().sortingOrder = 0;
-		ToggleGlow (spawnedTile, false);
+		ToggleGlow (spawnedTile, "normal");
+		SetSpaceGlow ("normal");
+		if (highlightedSpace != null){
+			ToggleGlow (highlightedSpace, "normal");
+		}
 		boardManager.CheckForScore ();
 		if (!firstTileFinalized) {
 			firstTileFinalized = true;
@@ -244,6 +290,7 @@ public class TurnManager : MonoBehaviour {
 			List<BoardSpace> boardspaces = boardManager.GetSpaceListFromSideNum ();
 			foreach (BoardSpace bs in boardspaces) {
 				bs.gameObject.GetComponent<Renderer> ().material = boardManager.mats [7];
+				bs.aboutToCollapse = true;
 			}
 		}
 		mode = "Select Stack";
@@ -285,7 +332,7 @@ public class TurnManager : MonoBehaviour {
 			StartCoroutine (ChangeModeToFinalizeSpill ());
 		} else {
 			mode = "Select Stack";
-			ToggleGlow (selectedSpace.tileList, false);
+			ToggleGlow (selectedSpace.tileList, "normal");
 			selectedSpace = null;
 		}
 		spillUI.SetActive (false);
@@ -310,7 +357,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void FinalizeSpill(){
-		ToggleGlow (boardManager.tilesQueuedToSpill, false);
+		ToggleGlow (boardManager.tilesQueuedToSpill, "normal");
 		mode = "Interim";
 		boardManager.Spill (boardManager.tilesQueuedToSpill);
 		boardManager.CheckForScore ();
