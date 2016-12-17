@@ -30,6 +30,9 @@ public class TurnManager : MonoBehaviour {
 	private bool tileInPosition;
 	private BoardSpace highlightedSpace;
 
+	public bool collapsingMode;
+	public bool scoringMode;
+
 	GameObject soundplayer;
 
 	public GameObject juicyManagerObj;
@@ -376,8 +379,11 @@ public class TurnManager : MonoBehaviour {
 			wait = 0.5f;
 		}
 		yield return new WaitForSeconds (wait);
+		collapsingMode = true;
 		boardManager.CollapseSide ();
 		yield return new WaitForSeconds (boardManager.totalSpillTime + 1.1f);
+		collapsingMode = false;
+		scoringMode = true;
 		boardManager.CheckForScore ();
 		if (boardManager.scoring) {
 			yield return new WaitForSeconds (juicyManager.waitForScoreAnimation);
@@ -391,6 +397,7 @@ public class TurnManager : MonoBehaviour {
 			mode = "Spawn Tile";
 		}
 		boardManager.totalSpillTime = 0f;
+		scoringMode = false;
 	}
 
 	BoardSpace CalculateSpaceFromLocation(Vector3 location){
