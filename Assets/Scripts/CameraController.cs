@@ -33,12 +33,6 @@ public class CameraController : MonoBehaviour {
 			iTween.MoveTo(transform.parent.gameObject,new Vector3(0,0,0),0.7f);
 			juicymanager.boardSpaceEntered = false;
 		}
-		if(Input.GetButtonDown("rotateClockwise")){
-			RotateBoard(1);
-		}
-		if(Input.GetButtonDown("rotateCounterclockwise")){
-			RotateBoard(-1);
-		}
 	}
 
 	public void RotateBoard(int rotationDirection){

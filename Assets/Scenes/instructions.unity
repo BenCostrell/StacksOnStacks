@@ -1771,13 +1771,13 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'SCORE POINTS
+  m_Text: 'LAND
 
-    BY PLACING
+    FOUR COLORS
 
-    FOUR UNIQUE
+    IN THE CENTER
 
-    TILES IN THE MIDDLE'
+    TO SCORE'
 --- !u!222 &944126692
 CanvasRenderer:
   m_ObjectHideFlags: 0
