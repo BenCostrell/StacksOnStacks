@@ -30,6 +30,7 @@ public class TurnManager : MonoBehaviour {
 	public bool anythingTweening;
 	private bool tileInPosition;
 	private BoardSpace highlightedSpace;
+	private Component[] spillArrowRenderers;
 
 	public bool collapsingMode;
 	public bool scoringMode;
@@ -126,6 +127,8 @@ public class TurnManager : MonoBehaviour {
 
 			if (mode == "Place Tile") {
 				PlaceTile (ray);
+			} else if (mode == "Queue Spill") {
+				HighlightSpillArrow (ray);
 			}
 
 			if (Input.GetMouseButtonDown (0)) {
@@ -180,6 +183,7 @@ public class TurnManager : MonoBehaviour {
 					Destroy (spillUI);
 					spillUI = Instantiate(spillUIPrefab,
 						new Vector3 (topTileLocation.x, topTileLocation.y, topTileLocation.z), Quaternion.identity) as GameObject;
+					spillArrowRenderers = spillUI.GetComponentsInChildren<Renderer> ();
 					spillUI.transform.eulerAngles = new Vector3 (0, rotationIndex * 90, 0);
 					spillUI.transform.GetChild (0).transform.localEulerAngles = new Vector3 (0,-rotationIndex * 90,0);
 				}
@@ -223,6 +227,26 @@ public class TurnManager : MonoBehaviour {
 			}
 		}
 		ToggleGlow (space.tileList, brightness);
+	}
+
+	void ToggleGlow(GameObject gmObj, string brightness){
+		if (brightness == "bright") {
+			gmObj.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined Diffuse");
+		} else if (brightness == "normal") {
+			gmObj.GetComponent<Renderer> ().material.shader = Shader.Find ("Standard");
+		} else if (brightness == "dark") {
+			gmObj.GetComponent<Renderer> ().material.shader = Shader.Find ("Self-Illumin/Outlined DiffuseAlt");
+		}
+	}
+
+	void ToggleGlow(Renderer renderer, string brightness){
+		if (brightness == "bright") {
+			renderer.material.shader = Shader.Find ("Self-Illumin/Outlined Diffuse");
+		} else if (brightness == "normal") {
+			renderer.material.shader = Shader.Find ("Standard");
+		} else if (brightness == "dark") {
+			renderer.material.shader = Shader.Find ("Self-Illumin/Outlined DiffuseAlt");
+		}
 	}
 
 	void SelectTile(Ray ray){
@@ -321,6 +345,16 @@ public class TurnManager : MonoBehaviour {
 		tileToPlace.transform.localPosition = new Vector3 (-5, 0, 0);
 		tileToPlace.gameObject.layer = LayerMask.NameToLayer ("DrawnTile");
 		juicyManager.spawnTileAnimation (tileToPlace.gameObject);
+	}
+
+	void HighlightSpillArrow(Ray ray){
+		foreach (Renderer arrowRenderer in spillArrowRenderers) {
+			ToggleGlow (arrowRenderer, "dark");
+		}
+		RaycastHit hit;
+		if (Physics.Raycast (ray, out hit, Mathf.Infinity, spillUILayer)) {
+			ToggleGlow (hit.collider.gameObject, "bright");
+		}
 	}
 
 	void InitQueueSpill(Ray ray){
