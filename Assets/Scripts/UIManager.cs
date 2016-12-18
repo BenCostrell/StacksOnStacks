@@ -10,13 +10,15 @@ public class UIManager : MonoBehaviour {
 	TurnManager turnmanager;
 	BoardManager boardmanager;
 
-	Button[] buttons;
+	//Button[] buttons;
 
 	public bool undoSpill;
 
 	bool cameraShakeWasEnabled;
 
 	GameObject soundplayer;
+
+	public Button[] buttons;
 
 
 	// Use this for initialization
@@ -25,10 +27,11 @@ public class UIManager : MonoBehaviour {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 
-		buttons = GetComponentsInChildren<Button>(true);
+		//buttons = GetComponentsInChildren<Button>(true);
 		undoSpill = false;
 
 		cameraShakeWasEnabled = false;
+
 	}
 	
 	// Update is called once per frame
@@ -37,7 +40,6 @@ public class UIManager : MonoBehaviour {
 		//undo button
 
 		if (turnmanager.mode == "Finalize Spill" && !turnmanager.anythingTweening) {
-			//undobutton.GetComponent<Animator> ().SetTrigger ("Disabled");
 			buttons [0].interactable = true;
 			buttons [1].interactable = true;
 
@@ -47,7 +49,6 @@ public class UIManager : MonoBehaviour {
 
 		}
 	}
-
 	public void UndoButtonClick(){
 		soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
 		turnmanager.UndoQueueSpill ();

@@ -63,6 +63,8 @@ public class JuicyManager : MonoBehaviour {
 		boardmanager = GameObject.FindWithTag ("BoardManager").GetComponent<BoardManager> ();
 		turnmanager = GameObject.FindWithTag("TurnManager").GetComponent<TurnManager> ();
 		uimanager = GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ();
+		uimanager.buttons [0].gameObject.SetActive (false);
+		uimanager.buttons [1].gameObject.SetActive (false);
 		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 		stackHeights = new List<float> ();
 
@@ -96,6 +98,8 @@ public class JuicyManager : MonoBehaviour {
 				space.transform.position = new Vector3 (centerPos [count].x, space.transform.position.y, centerPos [count].z);
 				count++;
 			}
+			uimanager.buttons [0].gameObject.SetActive (true);
+			uimanager.buttons [1].gameObject.SetActive (true);
 		}
 
 		if (!spawnTileEntry) {
@@ -459,6 +463,7 @@ public class JuicyManager : MonoBehaviour {
 
 		tileEnter (1, 0, tiletime, delaytiles,delaytilesrate);
 		delaytiles += delaytilesrate;
+
 
 
 		for (int j1 = 0; j1 < boardmanager.numCols; j1++) {
