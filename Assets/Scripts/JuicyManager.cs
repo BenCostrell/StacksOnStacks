@@ -115,6 +115,7 @@ public class JuicyManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (!finishedintro && boardmanager.boardInitialized) {
+			
 			introAnimation ();
 			finishedintro = true;
 

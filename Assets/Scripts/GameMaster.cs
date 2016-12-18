@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour {
 
+
 	// Use this for initialization
 	void Start () {
 	
@@ -15,21 +16,24 @@ public class GameMaster : MonoBehaviour {
 	}
 
 	public void LoadGame(){
-		StartCoroutine (executeLoadGame());
+		GetComponent<AudioSource> ().Play ();
+		StartCoroutine (executeGame());
 	}
 
-	IEnumerator executeLoadGame(){
-		yield return new WaitForSeconds (0.3f);
+	public void LoadTutorial(){
+		GetComponent<AudioSource> ().Play ();
+		StartCoroutine (executeTutorial());
+	}
 
-		if (SceneManager.GetActiveScene ().name == "intro") {
+	IEnumerator executeGame(){
+		yield return new WaitForSeconds (0.2f);
+		SceneManager.LoadScene ("main");
+	}
 
-			SceneManager.LoadScene ("instructions");
+	IEnumerator executeTutorial(){
+		yield return new WaitForSeconds (0.2f);
+		SceneManager.LoadScene ("instructions");
 
-		} else {
-
-			SceneManager.LoadScene ("main");
-
-		}
 			
 
 	}
