@@ -31,7 +31,7 @@ public class JuicyManager : MonoBehaviour {
 
 	List<float> stackHeights;
 
-	List<Vector3> centerPos;
+	public List<Vector3> centerPos;
 
 	public float waitForScoreAnimation;
 	public float scorePitch;
@@ -43,7 +43,7 @@ public class JuicyManager : MonoBehaviour {
 
 	public bool spawnTileEntry;
 
-	GameObject soundplayer;
+	public GameObject soundplayer;
 
 	bool collapseSideSpaceStarted;
 
@@ -65,7 +65,6 @@ public class JuicyManager : MonoBehaviour {
 		uimanager = GameObject.FindWithTag ("UICanvas").GetComponent<UIManager> ();
 		uimanager.buttons [0].gameObject.SetActive (false);
 		uimanager.buttons [1].gameObject.SetActive (false);
-		soundplayer = GameObject.FindWithTag ("SoundPlayer");
 		stackHeights = new List<float> ();
 
 		delaySpaceCollapse = 0f;
@@ -101,33 +100,11 @@ public class JuicyManager : MonoBehaviour {
 			uimanager.buttons [0].gameObject.SetActive (true);
 			uimanager.buttons [1].gameObject.SetActive (true);
 		}
-
-		if (!spawnTileEntry) {
-			if (turnmanager.mode == "Select Tile") {
-				turnmanager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = true;
-			} else {
-				turnmanager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = false;
-				spawnTileEntry = true;
-				soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
-			}
-			if (!realfinishedintro) {
-				realfinishedintro = true;
-			}
-		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (!finishedintro && boardmanager.boardInitialized) {
-			
-			introAnimation ();
-			finishedintro = true;
 
-			foreach (BoardSpace space in boardmanager.centerSpaces) {
-				space.gameObject.GetComponent<Animator> ().enabled = true;
-				centerPos.Add (space.transform.position);
-			}
-		}
 
 		ColorPhases ();
 
@@ -432,7 +409,7 @@ public class JuicyManager : MonoBehaviour {
 	}
 
 
-	void introAnimation(){
+	public void introAnimation(){
 		float boardspacetime = 0.05f;
 		float boardspacetimerate = 0.05f;
 		for (int r = 0; r < boardmanager.numRows; r++) {

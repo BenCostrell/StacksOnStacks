@@ -592,12 +592,14 @@ MonoBehaviour:
   delaySpaceCollapse: 0
   spaceCount: 0
   delayTileSpill: 0
+  centerPos: []
   waitForScoreAnimation: 0
   scorePitch: 0
   scoreSfx: {fileID: 8300000, guid: 22ab163cd5bef4c37813c8252c8e5b13, type: 3}
   tilePlaceSfx: {fileID: 8300000, guid: 1d27f92c93337409b91b51813d72bb81, type: 3}
   boardSpaceEntered: 0
   spawnTileEntry: 0
+  soundplayer: {fileID: 1591555269}
 --- !u!4 &223118582
 Transform:
   m_ObjectHideFlags: 0
@@ -4600,8 +4602,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.678}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0}
     m_ColorMultiplier: 1
@@ -5313,8 +5315,8 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 0.678}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0}
     m_ColorMultiplier: 1

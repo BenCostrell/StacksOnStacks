@@ -67,8 +67,9 @@ public class BoardManager : MonoBehaviour {
 		CreateBoard ();
 		CreateTileBag ();
 		boardInitialized = false;
-		/*mats [0].color = juicy.juicyColors [0, 1];
-		mats [1].color = juicy.juicyColors [0, 2];*/
+
+
+
 	}
 
 	// Update is called once per frame
@@ -78,6 +79,33 @@ public class BoardManager : MonoBehaviour {
 			boardInitialized = true;
 		}
 
+		if (!juicy.finishedintro && boardInitialized) {
+
+			juicy.introAnimation ();
+			juicy.finishedintro = true;
+
+			foreach (BoardSpace space in centerSpaces) {
+				space.gameObject.GetComponent<Animator> ().enabled = true;
+				juicy.centerPos.Add (space.transform.position);
+			}
+		}
+
+
+	}
+
+	void LateUpdate(){
+		if (!juicy.spawnTileEntry) {
+			if (turnManager.mode == "Select Tile") {
+				turnManager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = true;
+			} else {
+				turnManager.spawnedTile.gameObject.GetComponent<Animator> ().enabled = false;
+				juicy.spawnTileEntry = true;
+				juicy.soundplayer.transform.GetChild (5).gameObject.GetComponent<AudioSource> ().Play ();
+			}
+			if (!juicy.realfinishedintro) {
+				juicy.realfinishedintro = true;
+			}
+		}
 
 	}
 
